@@ -37,10 +37,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const { data, error } = await supabase
             .from("user_roles")
             .select("role")
-            .eq("user_id", userId)
-            .maybeSingle();
+            .eq("user_id", userId);
           if (error) throw error;
-          return (data?.role as UserRole) ?? null;
+          if (!data || data.length === 0) return null;
+          // Prioriza a role de maior privilégio
+          const priority: Record<string, number> = { admin: 0, receptionist: 1, professional: 2, client: 3 };
+          const sorted = data.sort((a, b) => (priority[a.role] ?? 99) - (priority[b.role] ?? 99));
+          return (sorted[0].role as UserRole) ?? null;
         })();
 
         const timeoutPromise = new Promise<UserRole>((resolve) => {
