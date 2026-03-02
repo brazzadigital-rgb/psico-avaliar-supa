@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react";
 import { CheckCircle2, Calculator, CreditCard, Clock, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 
 const services = [
   "Avaliação Psicológica",
@@ -17,6 +18,7 @@ const services = [
 
 export default function FinanciamentoPage() {
   const { toast } = useToast();
+  const { getWhatsAppUrl, phoneDigits } = useWhatsApp();
   const [formData, setFormData] = useState({
     name: "",
     whatsapp: "",
@@ -29,7 +31,7 @@ export default function FinanciamentoPage() {
     e.preventDefault();
     // In a real app, this would send the form data to the backend
     const message = `Olá! Gostaria de simular o financiamento.\n\nNome: ${formData.name}\nServiço: ${formData.service}\n${formData.observations ? `Observações: ${formData.observations}` : ""}`;
-    window.open(`https://wa.me/5551992809471?text=${encodeURIComponent(message)}`, "_blank");
+    window.open(`https://wa.me/55${phoneDigits}?text=${encodeURIComponent(message)}`, "_blank");
     toast({
       title: "Solicitação enviada!",
       description: "Em breve entraremos em contato pelo WhatsApp.",

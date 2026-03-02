@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { MessageCircle, Star } from "lucide-react";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 
 const faqs = [
   {
@@ -102,6 +103,7 @@ const faqs = [
 ];
 
 export default function FAQPage() {
+  const { getWhatsAppUrl } = useWhatsApp();
   return (
     <Layout>
       {/* Hero */}
@@ -171,7 +173,7 @@ export default function FAQPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="https://wa.me/5551992809471?text=Olá! Tenho uma dúvida."
+              href={getWhatsAppUrl("Olá! Tenho uma dúvida.")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary font-semibold rounded-full hover:bg-white/90 transition-all duration-300 hover:scale-105"

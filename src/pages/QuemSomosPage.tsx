@@ -7,6 +7,7 @@ import { PremiumCard, IconBox, FeatureList } from "@/components/ui/premium-card"
 import { Timeline } from "@/components/ui/timeline";
 import heroImage from "@/assets/hero-quem-somos.jpg";
 import { ScrollAnimate, StaggerContainer } from "@/hooks/useScrollAnimation";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 import {
   Heart,
   Target,
@@ -95,6 +96,7 @@ const differentials = [
 ];
 
 export default function QuemSomosPage() {
+  const { getWhatsAppUrl } = useWhatsApp();
   return (
     <Layout>
       {/* Hero */}
@@ -109,7 +111,7 @@ export default function QuemSomosPage() {
         <div className="flex flex-wrap gap-4 mt-8">
           <Button asChild className="btn-premium text-white rounded-full">
             <a
-              href="https://wa.me/5551992809471?text=Olá! Gostaria de agendar uma triagem."
+              href={getWhatsAppUrl("Olá! Gostaria de agendar uma triagem.")}
               target="_blank"
               rel="noopener noreferrer"
             >

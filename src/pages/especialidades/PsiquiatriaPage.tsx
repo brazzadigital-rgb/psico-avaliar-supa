@@ -15,7 +15,7 @@ import {
   Pill,
   Activity,
 } from "lucide-react";
-
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 const benefits = [
   {
     icon: Brain,
@@ -68,6 +68,7 @@ const integrationPoints = [
 ];
 
 export default function PsiquiatriaPage() {
+  const { getWhatsAppUrl } = useWhatsApp();
   return (
     <Layout>
       {/* Hero Section */}
@@ -102,7 +103,7 @@ export default function PsiquiatriaPage() {
 
               <div className="flex flex-wrap gap-4">
                 <a
-                  href="https://wa.me/5551992809471?text=Olá! Gostaria de agendar uma consulta psiquiátrica."
+                  href={getWhatsAppUrl("Olá! Gostaria de agendar uma consulta psiquiátrica.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary font-semibold rounded-full hover:bg-white/90 transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
@@ -112,7 +113,7 @@ export default function PsiquiatriaPage() {
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>
                 <a
-                  href="https://wa.me/5551992809471?text=Olá! Tenho dúvidas sobre a consulta psiquiátrica."
+                  href={getWhatsAppUrl("Olá! Tenho dúvidas sobre a consulta psiquiátrica.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 px-8 py-4 border border-white/30 text-white font-medium rounded-full hover:bg-white/10 backdrop-blur-sm transition-all duration-300"
@@ -279,7 +280,7 @@ export default function PsiquiatriaPage() {
             Agende uma consulta psiquiátrica e dê o primeiro passo para uma vida com mais equilíbrio e bem-estar.
           </p>
           <a
-            href="https://wa.me/5551992809471?text=Olá! Quero agendar uma consulta psiquiátrica."
+            href={getWhatsAppUrl("Olá! Quero agendar uma consulta psiquiátrica.")}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-8 py-4 btn-premium text-white font-semibold rounded-full hover:scale-105 transition-all duration-300 animate-fade-in-up"

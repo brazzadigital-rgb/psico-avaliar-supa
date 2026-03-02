@@ -8,6 +8,7 @@ import { Calendar, ArrowLeft, Share2, BookOpen, Clock, ArrowRight } from "lucide
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 import { useEffect, useState } from "react";
 import blogPsicoterapia from "@/assets/blog/psicoterapia-hero.jpg";
 import blogAba from "@/assets/blog/terapia-aba-criancas.jpg";
@@ -45,6 +46,7 @@ const calculateReadingTime = (content: string | null): number => {
 
 export default function BlogPostPage() {
   const { slug } = useParams();
+  const { getWhatsAppUrl } = useWhatsApp();
   const [readProgress, setReadProgress] = useState(0);
 
   const { data: post, isLoading, error } = useQuery({
@@ -230,7 +232,7 @@ export default function BlogPostPage() {
                     </Button>
                     <Button asChild variant="outline" className="h-8 text-xs px-4">
                       <a
-                        href="https://wa.me/5551992809471"
+                        href={getWhatsAppUrl()}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

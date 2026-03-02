@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 import {
   Calendar,
   Clock,
@@ -28,6 +29,7 @@ import {
 
 export default function ConsultaCodigoPage() {
   const { codigo } = useParams<{ codigo: string }>();
+  const { getWhatsAppUrl } = useWhatsApp();
   const [searchCode, setSearchCode] = useState(codigo || "");
   const [activeCode, setActiveCode] = useState(codigo || "");
 
@@ -261,7 +263,7 @@ export default function ConsultaCodigoPage() {
                 <Separator />
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button variant="outline" asChild className="flex-1 gap-2">
-                    <a href="https://wa.me/5551992809471" target="_blank" rel="noopener noreferrer">
+                    <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
                       <Phone className="w-4 h-4" /> Falar no WhatsApp
                     </a>
                   </Button>

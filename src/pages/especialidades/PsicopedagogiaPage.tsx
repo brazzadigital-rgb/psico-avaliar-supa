@@ -15,7 +15,7 @@ import {
   Users,
   PenTool,
 } from "lucide-react";
-
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 const difficulties = [
   {
     icon: BookOpen,
@@ -89,6 +89,7 @@ const faqs = [
 ];
 
 export default function PsicopedagogiaPage() {
+  const { getWhatsAppUrl } = useWhatsApp();
   return (
     <Layout>
       {/* Hero Section */}
@@ -123,7 +124,7 @@ export default function PsicopedagogiaPage() {
 
               <div className="flex flex-wrap gap-4">
                 <a
-                  href="https://wa.me/5551992809471?text=Olá! Gostaria de agendar uma avaliação psicopedagógica."
+                  href={getWhatsAppUrl("Olá! Gostaria de agendar uma avaliação psicopedagógica.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary font-semibold rounded-full hover:bg-white/90 transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
@@ -133,7 +134,7 @@ export default function PsicopedagogiaPage() {
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>
                 <a
-                  href="https://wa.me/5551992809471?text=Olá! Tenho dúvidas sobre psicopedagogia."
+                  href={getWhatsAppUrl("Olá! Tenho dúvidas sobre psicopedagogia.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 px-8 py-4 border border-white/30 text-white font-medium rounded-full hover:bg-white/10 backdrop-blur-sm transition-all duration-300"
@@ -232,7 +233,7 @@ export default function PsicopedagogiaPage() {
                     Utilizamos jogos, atividades criativas e recursos tecnológicos para tornar o aprendizado uma experiência prazerosa e significativa.
                   </p>
                   <a
-                    href="https://wa.me/5551992809471?text=Olá! Quero saber mais sobre a psicopedagogia."
+                    href={getWhatsAppUrl("Olá! Quero saber mais sobre a psicopedagogia.")}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-primary font-medium hover:text-accent transition-colors group"
@@ -296,7 +297,7 @@ export default function PsicopedagogiaPage() {
               Mantemos comunicação ativa com a escola e oferecemos orientação aos professores, criando uma rede de apoio integrada para potencializar o desenvolvimento e a aprendizagem.
             </p>
             <a
-              href="https://wa.me/5551992809471?text=Olá! Gostaria de saber mais sobre a orientação escolar."
+              href={getWhatsAppUrl("Olá! Gostaria de saber mais sobre a orientação escolar.")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-primary font-medium hover:text-accent transition-colors group"
@@ -321,7 +322,7 @@ export default function PsicopedagogiaPage() {
                 Esclarecemos as principais dúvidas sobre nosso atendimento psicopedagógico.
               </p>
               <a
-                href="https://wa.me/5551992809471?text=Olá! Tenho uma dúvida sobre psicopedagogia."
+                href={getWhatsAppUrl("Olá! Tenho uma dúvida sobre psicopedagogia.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-primary font-medium hover:text-accent transition-colors group"
@@ -357,7 +358,7 @@ export default function PsicopedagogiaPage() {
             Agende uma avaliação e descubra como podemos ajudar no desenvolvimento e na aprendizagem.
           </p>
           <a
-            href="https://wa.me/5551992809471?text=Olá! Quero agendar uma avaliação psicopedagógica."
+            href={getWhatsAppUrl("Olá! Quero agendar uma avaliação psicopedagógica.")}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-8 py-4 btn-premium text-white font-semibold rounded-full hover:scale-105 transition-all duration-300 animate-fade-in-up"
