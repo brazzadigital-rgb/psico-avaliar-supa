@@ -146,6 +146,23 @@ serve(async (req) => {
       }
     }
 
+    // If role is professional, also create a professional record linked to the user
+    if (role === "professional") {
+      const { error: professionalError } = await supabaseAdmin
+        .from("professionals")
+        .insert({
+          user_id: newUser.user.id,
+          name: fullName || "Sem nome",
+          email: email,
+          is_active: true,
+        });
+
+      if (professionalError) {
+        console.error("Error creating professional record:", professionalError);
+        // Non-critical, continue
+      }
+    }
+
     console.log(`User created successfully: ${email} with role ${role}`);
 
     return new Response(

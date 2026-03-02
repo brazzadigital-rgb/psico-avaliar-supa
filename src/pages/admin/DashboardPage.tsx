@@ -18,32 +18,41 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { useProfessionalId } from "@/hooks/useProfessionalId";
 
 export default function DashboardPage() {
   const today = format(new Date(), "yyyy-MM-dd");
   const [revenueRange, setRevenueRange] = useState("30");
+  const { professionalId, isProfessional } = useProfessionalId();
 
   const { data: todayAppointments = [] } = useQuery({
-    queryKey: ["todayAppointments", today],
+    queryKey: ["todayAppointments", today, professionalId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("appointments")
         .select(`
           *,
           service:services(name),
-          client:clients(full_name, phone)
+          client:clients(full_name, phone),
+          professional:professionals(name)
         `)
         .eq("scheduled_date", today)
         .order("scheduled_time");
+      
+      if (isProfessional && professionalId) {
+        query = query.eq("professional_id", professionalId);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
   });
 
   const { data: pendingAppointments = [] } = useQuery({
-    queryKey: ["pendingAppointments"],
+    queryKey: ["pendingAppointments", professionalId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("appointments")
         .select(`
           *,
@@ -54,14 +63,33 @@ export default function DashboardPage() {
         .gte("scheduled_date", today)
         .order("scheduled_date")
         .limit(5);
+      
+      if (isProfessional && professionalId) {
+        query = query.eq("professional_id", professionalId);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
   });
 
   const { data: stats } = useQuery({
-    queryKey: ["dashboardStats"],
+    queryKey: ["dashboardStats", professionalId],
     queryFn: async () => {
+      if (isProfessional && professionalId) {
+        const [appointmentsRes, clientsRes] = await Promise.all([
+          supabase.from("appointments").select("id", { count: "exact" }).eq("professional_id", professionalId),
+          supabase.from("appointments").select("client_id").eq("professional_id", professionalId),
+        ]);
+        const uniqueClients = new Set(clientsRes.data?.map(a => a.client_id).filter(Boolean));
+        return {
+          appointments: appointmentsRes.count || 0,
+          clients: uniqueClients.size,
+          services: 0,
+        };
+      }
+
       const [appointmentsRes, clientsRes, servicesRes] = await Promise.all([
         supabase.from("appointments").select("id", { count: "exact" }),
         supabase.from("clients").select("id", { count: "exact" }),
@@ -149,9 +177,13 @@ export default function DashboardPage() {
     <div className="p-6 lg:p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-display font-bold mb-2">Dashboard</h1>
+        <h1 className="text-2xl font-display font-bold mb-2">
+          {isProfessional ? "Meus Agendamentos" : "Dashboard"}
+        </h1>
         <p className="text-muted-foreground">
-          Bem-vindo ao painel administrativo da Psicoavaliar
+          {isProfessional 
+            ? "Visualize seus agendamentos e pacientes" 
+            : "Bem-vindo ao painel administrativo da Psicoavaliar"}
         </p>
       </div>
 
@@ -192,7 +224,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Revenue Block */}
+      {/* Revenue Block - Hide for professionals */}
+      {!isProfessional && (
       <Card className="mb-8 bg-gradient-to-br from-primary/5 via-transparent to-accent/5">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-lg font-display font-bold flex items-center gap-2">
@@ -258,6 +291,7 @@ export default function DashboardPage() {
           </div>
         </CardContent>
       </Card>
+      )}
 
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Today's Appointments */}

@@ -170,7 +170,9 @@ export default function AdminLayout() {
             </div>
             <div>
               <span className="font-display font-bold text-primary block leading-tight">Psicoavaliar</span>
-              <span className="text-xs text-muted-foreground">Painel Admin</span>
+              <span className="text-xs text-muted-foreground">
+                {userRole === 'professional' ? 'Painel Profissional' : 'Painel Admin'}
+              </span>
             </div>
           </Link>
         </div>

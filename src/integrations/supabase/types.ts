@@ -1904,6 +1904,10 @@ export type Database = {
         }
         Returns: string
       }
+      get_professional_id_for_user: {
+        Args: { _user_id: string }
+        Returns: string
+      }
       get_unread_notification_count: {
         Args: { _user_id: string }
         Returns: number
