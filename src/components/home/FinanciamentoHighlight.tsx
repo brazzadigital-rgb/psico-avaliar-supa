@@ -55,7 +55,7 @@ export function FinanciamentoHighlight() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-6">
                 <BadgePercent className="w-4 h-4 text-brand-gold" />
-                <span>Carro-chefe PsicoAvaliar</span>
+                <span>Financiamento PsicoAvaliar</span>
                 <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
               </div>
 
