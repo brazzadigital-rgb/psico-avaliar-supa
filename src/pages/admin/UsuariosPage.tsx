@@ -126,8 +126,15 @@ export default function UsuariosPage() {
 
       if (professionalsError) throw professionalsError;
 
-      // Combine data - prioritize user_roles table
-      const roleMap = new Map(roles?.map(r => [r.user_id, r.role]) || []);
+      // Combine data - prioritize highest-privilege role per user
+      const rolePriority: Record<string, number> = { admin: 0, receptionist: 1, professional: 2, client: 3 };
+      const roleMap = new Map<string, AppRole>();
+      for (const r of (roles || [])) {
+        const existing = roleMap.get(r.user_id);
+        if (!existing || (rolePriority[r.role] ?? 99) < (rolePriority[existing] ?? 99)) {
+          roleMap.set(r.user_id, r.role as AppRole);
+        }
+      }
       const clientMap = new Map(clients?.map(c => [c.user_id, c]) || []);
       const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
       const professionalMap = new Map(professionals?.map(p => [p.user_id, p]) || []);
