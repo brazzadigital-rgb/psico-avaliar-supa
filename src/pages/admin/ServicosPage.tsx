@@ -57,6 +57,7 @@ interface FormData {
   payment_type: PaymentType;
   deposit_amount: string;
   show_price_publicly: boolean;
+  show_in_financing: boolean;
 }
 
 const defaultFormData: FormData = {
@@ -74,6 +75,7 @@ const defaultFormData: FormData = {
   payment_type: "none",
   deposit_amount: "",
   show_price_publicly: true,
+  show_in_financing: false,
 };
 
 export default function ServicosPage() {
@@ -113,7 +115,6 @@ export default function ServicosPage() {
         duration_minutes: data.duration_minutes,
         price: data.price ? parseFloat(data.price) : null,
         modalities,
-        // New pricing fields
         price_mode: data.price_mode,
         price_from_amount: data.price_from_amount ? parseFloat(data.price_from_amount) : null,
         allow_installments: data.allow_installments,
@@ -122,6 +123,7 @@ export default function ServicosPage() {
         payment_type: data.payment_type,
         deposit_amount: data.deposit_amount ? parseFloat(data.deposit_amount) : null,
         show_price_publicly: data.show_price_publicly,
+        show_in_financing: data.show_in_financing,
         updated_at: new Date().toISOString(),
       };
 
@@ -203,6 +205,7 @@ export default function ServicosPage() {
       payment_type: service.payment_type || "none",
       deposit_amount: service.deposit_amount?.toString() || "",
       show_price_publicly: service.show_price_publicly ?? true,
+      show_in_financing: (service as any).show_in_financing ?? false,
     });
     setIsDialogOpen(true);
   };
@@ -465,6 +468,21 @@ export default function ServicosPage() {
                     checked={formData.show_price_publicly}
                     onCheckedChange={(checked) =>
                       setFormData({ ...formData, show_price_publicly: checked })
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">Visível no Financiamento</p>
+                    <p className="text-sm text-muted-foreground">
+                      Exibir este serviço na página de financiamento próprio
+                    </p>
+                  </div>
+                  <Switch
+                    checked={formData.show_in_financing}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, show_in_financing: checked })
                     }
                   />
                 </div>

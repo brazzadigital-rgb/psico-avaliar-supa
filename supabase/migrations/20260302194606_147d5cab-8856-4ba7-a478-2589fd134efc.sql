@@ -1,0 +1,1 @@
+ALTER TABLE public.services ADD COLUMN show_in_financing boolean NOT NULL DEFAULT false;
