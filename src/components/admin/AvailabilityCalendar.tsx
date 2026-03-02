@@ -213,22 +213,14 @@ export default function AvailabilityCalendar() {
               selected={selectedDates}
               onSelect={handleDateSelect}
               locale={ptBR}
-              className="rounded-md border p-3"
+              className="rounded-md border p-3 availability-calendar"
               modifiers={{
                 available: availableDates,
                 blocked: blockedDates,
               }}
-              modifiersStyles={{
-                available: {
-                  backgroundColor: "hsl(var(--chart-2))",
-                  color: "white",
-                  borderRadius: "9999px",
-                },
-                blocked: {
-                  backgroundColor: "hsl(var(--destructive))",
-                  color: "white",
-                  borderRadius: "9999px",
-                },
+              modifiersClassNames={{
+                available: "day-available",
+                blocked: "day-blocked",
               }}
               disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
             />
