@@ -103,7 +103,7 @@ export default function ClientePagamentos() {
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-mono text-sm">{order.code}</span>
-                        {getStatusBadge(order.status)}
+                        {getStatusBadge(order.status as OrderStatus)}
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {order.items?.[0]?.description || "Serviço"}
@@ -114,7 +114,7 @@ export default function ClientePagamentos() {
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <p className="text-lg font-bold">{formatCurrency(order.total)}</p>
+                        <p className="text-lg font-bold">{formatCurrency(order.total_amount)}</p>
                       </div>
                       <Button asChild>
                         <Link to={`/checkout?order=${order.id}`}>
@@ -146,20 +146,20 @@ export default function ClientePagamentos() {
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-mono text-sm">{order.code}</span>
-                        {getStatusBadge(order.status)}
+                        {getStatusBadge(order.status as OrderStatus)}
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {order.items?.[0]?.description || "Serviço"}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Pago em {order.paid_at ? format(new Date(order.paid_at), "dd/MM/yyyy", { locale: ptBR }) : "-"}
+                        Pago em {(order as any).paid_at ? format(new Date((order as any).paid_at), "dd/MM/yyyy", { locale: ptBR }) : "-"}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold">{formatCurrency(order.total)}</p>
+                      <p className="text-lg font-bold">{formatCurrency(order.total_amount)}</p>
                       {order.payments?.[0] && (
                         <p className="text-sm text-muted-foreground">
-                          {getPaymentMethodLabel(order.payments[0].method)}
+                          {getPaymentMethodLabel(order.payments[0].method as any)}
                         </p>
                       )}
                     </div>
@@ -183,7 +183,7 @@ export default function ClientePagamentos() {
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-mono text-sm">{order.code}</span>
-                        {getStatusBadge(order.status)}
+                        {getStatusBadge(order.status as OrderStatus)}
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {order.items?.[0]?.description || "Serviço"}
@@ -193,7 +193,7 @@ export default function ClientePagamentos() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold">{formatCurrency(order.total)}</p>
+                      <p className="text-lg font-bold">{formatCurrency(order.total_amount)}</p>
                     </div>
                   </div>
                 </CardContent>

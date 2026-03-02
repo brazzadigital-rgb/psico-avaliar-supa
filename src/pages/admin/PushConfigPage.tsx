@@ -410,7 +410,7 @@ export default function PushConfigPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {!config?.is_configured && (
+              {!config?.vapid_public_key && (
                 <div className="p-4 rounded-lg bg-warning/10 border border-warning/20 text-warning-foreground">
                   <p className="text-sm font-medium">⚠️ Push não configurado</p>
                   <p className="text-xs mt-1">
@@ -442,7 +442,7 @@ export default function PushConfigPage() {
               <div className="flex justify-end pt-4">
                 <Button
                   onClick={() => testPushMutation.mutate()}
-                  disabled={testPushMutation.isPending || !config?.is_configured}
+                  disabled={testPushMutation.isPending || !config?.vapid_public_key}
                   className="gap-2"
                 >
                   {testPushMutation.isPending ? (
