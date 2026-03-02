@@ -50,8 +50,8 @@ interface BlogPost {
   status: string;
   published_at: string | null;
   created_at: string;
-  seo_title: string | null;
-  seo_description: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
   category?: { name: string } | null;
 }
 

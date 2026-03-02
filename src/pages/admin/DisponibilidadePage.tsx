@@ -57,8 +57,8 @@ interface AvailabilityRule {
 interface TimeOffBlock {
   id: string;
   professional_id: string;
-  start_date: string;
-  end_date: string;
+  start_datetime: string;
+  end_datetime: string;
   reason: string | null;
   professional?: { name: string };
 }
@@ -119,7 +119,7 @@ export default function DisponibilidadePage() {
       const { data, error } = await supabase
         .from("time_off_blocks")
         .select("*, professional:professionals(name)")
-        .order("start_date", { ascending: false });
+        .order("start_datetime", { ascending: false });
       if (error) throw error;
       return data as TimeOffBlock[];
     },

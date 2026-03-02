@@ -183,31 +183,31 @@ export default function AgendarPage() {
   const isDateBlocked = (date: Date) => {
     const dateStr = format(date, "yyyy-MM-dd");
     if (!formData.serviceId) {
-      return timeOffBlocks.some(block => dateStr >= block.start_date && dateStr <= block.end_date);
+      return timeOffBlocks.some(block => dateStr >= format(new Date(block.start_datetime), "yyyy-MM-dd") && dateStr <= format(new Date(block.end_datetime), "yyyy-MM-dd"));
     }
     if (professionalsForService.length === 0) return true;
     return professionalsForService.every(profId => {
       return filteredTimeOffBlocks.some(block => 
-        block.professional_id === profId && dateStr >= block.start_date && dateStr <= block.end_date
+        block.professional_id === profId && dateStr >= format(new Date(block.start_datetime), "yyyy-MM-dd") && dateStr <= format(new Date(block.end_datetime), "yyyy-MM-dd")
       );
     });
   };
 
   const getDateOverride = (date: Date) => {
     const dateStr = format(date, "yyyy-MM-dd");
-    return filteredDateOverrides.find(override => override.date === dateStr && override.is_available);
+    return filteredDateOverrides.find(override => override.override_date === dateStr && !override.is_blocked);
   };
 
   const isDateBlockedByOverride = (date: Date) => {
     const dateStr = format(date, "yyyy-MM-dd");
     if (!formData.serviceId || professionalsForService.length === 0) {
-      return dateOverrides.some(o => o.date === dateStr && !o.is_available);
+      return dateOverrides.some(o => o.override_date === dateStr && o.is_blocked);
     }
-    const overridesForDate = filteredDateOverrides.filter(o => o.date === dateStr);
+    const overridesForDate = filteredDateOverrides.filter(o => o.override_date === dateStr);
     if (overridesForDate.length === 0) return false;
     return professionalsForService.every(profId => {
       const override = overridesForDate.find(o => o.professional_id === profId);
-      return override && !override.is_available;
+      return override && override.is_blocked;
     });
   };
 
@@ -229,7 +229,7 @@ export default function AgendarPage() {
     const slots: string[] = [];
     
     const overridesForDate = filteredDateOverrides.filter(
-      o => o.date === dateStr && o.is_available && o.start_time && o.end_time
+      o => o.override_date === dateStr && !o.is_blocked && o.start_time && o.end_time
     );
     
     if (overridesForDate.length > 0) {
@@ -428,11 +428,11 @@ export default function AgendarPage() {
       const { data: clientId, error: clientError } = await supabase
         .rpc("get_or_create_client_for_booking", {
           _email: formData.clientEmail,
-          _full_name: formData.clientName,
+          _name: formData.clientName,
           _phone: formData.clientPhone,
           _birth_date: birthDateForDb,
           _is_minor: formData.isMinor,
-          _guardian_name: formData.guardianName || null,
+          _guardian: formData.guardianName || null,
         });
 
       if (clientError) {
@@ -456,9 +456,7 @@ export default function AgendarPage() {
 
       // Step 2: Create appointment
       console.log("[Agendar] Step 2: Criando agendamento...");
-      const appointmentStatus: "pending" | "pending_payment" = selectedService?.require_payment_to_confirm 
-        ? "pending_payment"
-        : "pending";
+      const appointmentStatus = "pending";
 
       const appointmentPayload = {
         client_id: clientId,
@@ -504,14 +502,12 @@ export default function AgendarPage() {
           client_id: clientId,
           appointment_id: appointment.id,
           status: "pending" as const,
-          subtotal: paymentAmount,
-          total: paymentAmount,
-          payment_required: true,
-          payment_type: selectedService.payment_type === "deposit" ? "deposit" as const : "full" as const,
-          deposit_amount: selectedService.payment_type === "deposit" ? selectedService.deposit_amount : null,
-          balance_due: selectedService.payment_type === "deposit" && selectedService.price 
-            ? selectedService.price - (selectedService.deposit_amount || 0) 
-            : 0,
+          total_amount: paymentAmount,
+          currency: "BRL" as const,
+          metadata: {
+            payment_type: selectedService.payment_type === "deposit" ? "deposit" : "full",
+            deposit_amount: selectedService.payment_type === "deposit" ? selectedService.deposit_amount : null,
+          },
         };
         console.log("[Agendar] Payload do pedido:", orderPayload);
 
@@ -538,12 +534,11 @@ export default function AgendarPage() {
         console.log("[Agendar] Step 4: Criando item do pedido...");
         const { error: orderItemError } = await supabase.from("order_items").insert([{
           order_id: order.id,
-          payable_type: "appointment" as const,
-          payable_id: appointment.id,
+          service_id: formData.serviceId,
           description: selectedService.name,
-          unit_amount: paymentAmount,
+          unit_price: paymentAmount,
           quantity: 1,
-          total_amount: paymentAmount,
+          total_price: paymentAmount,
         }]);
 
         if (orderItemError) {

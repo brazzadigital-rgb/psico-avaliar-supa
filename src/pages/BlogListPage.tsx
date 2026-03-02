@@ -34,7 +34,6 @@ interface Category {
   id: string;
   name: string;
   slug: string;
-  description: string | null;
 }
 
 export default function BlogListPage() {
@@ -111,8 +110,7 @@ export default function BlogListPage() {
               {currentCategory ? currentCategory.name : "Blog Psicoavaliar"}
             </h1>
             <p className="text-base md:text-lg text-muted-foreground">
-              {currentCategory?.description ||
-                "Artigos sobre saúde mental, desenvolvimento infantil e bem-estar."}
+              {"Artigos sobre saúde mental, desenvolvimento infantil e bem-estar."}
             </p>
           </div>
         </div>

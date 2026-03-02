@@ -16,7 +16,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 interface NotificationBellProps {
-  basePath?: string; // "/admin" or "/cliente"
+  basePath?: string;
 }
 
 export function NotificationBell({ basePath = "/admin" }: NotificationBellProps) {
@@ -25,7 +25,7 @@ export function NotificationBell({ basePath = "/admin" }: NotificationBellProps)
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("todas");
 
-  const getCategoryIcon = (category: Notification["category"]) => {
+  const getCategoryIcon = (category: string) => {
     switch (category) {
       case "consultas":
         return <Calendar className="w-4 h-4" />;
@@ -40,7 +40,7 @@ export function NotificationBell({ basePath = "/admin" }: NotificationBellProps)
     }
   };
 
-  const getCategoryColor = (category: Notification["category"]) => {
+  const getCategoryColor = (category: string) => {
     switch (category) {
       case "consultas":
         return "bg-blue-500/10 text-blue-600";
@@ -55,40 +55,24 @@ export function NotificationBell({ basePath = "/admin" }: NotificationBellProps)
     }
   };
 
-  const getPriorityStyle = (priority: Notification["priority"]) => {
-    switch (priority) {
-      case "high":
-        return "border-l-4 border-l-destructive";
-      case "normal":
-        return "";
-      case "low":
-        return "opacity-80";
-      default:
-        return "";
-    }
-  };
-
   const filteredNotifications = notifications.filter((n) => {
     if (activeTab === "todas") return true;
     return n.category === activeTab;
   });
 
   const handleNotificationClick = (notification: Notification) => {
-    // Mark as read
-    if (!notification.read_at) {
+    if (!notification.is_read) {
       markAsRead([notification.id]);
     }
-
-    // Navigate to action URL
-    if (notification.action_url) {
+    if (notification.link) {
       setOpen(false);
-      navigate(notification.action_url);
+      navigate(notification.link);
     }
   };
 
   const unreadInCategory = (category: string) => {
     if (category === "todas") return unreadCount;
-    return notifications.filter((n) => n.category === category && !n.read_at).length;
+    return notifications.filter((n) => n.category === category && !n.is_read).length;
   };
 
   return (
@@ -164,8 +148,7 @@ export function NotificationBell({ basePath = "/admin" }: NotificationBellProps)
                       key={notification.id}
                       className={cn(
                         "p-3 hover:bg-muted/50 cursor-pointer transition-colors",
-                        !notification.read_at && "bg-primary/5",
-                        getPriorityStyle(notification.priority)
+                        !notification.is_read && "bg-primary/5"
                       )}
                       onClick={() => handleNotificationClick(notification)}
                     >
@@ -183,12 +166,12 @@ export function NotificationBell({ basePath = "/admin" }: NotificationBellProps)
                             <p
                               className={cn(
                                 "text-sm font-medium leading-tight",
-                                !notification.read_at && "font-semibold"
+                                !notification.is_read && "font-semibold"
                               )}
                             >
                               {notification.title}
                             </p>
-                            {!notification.read_at && (
+                            {!notification.is_read && (
                               <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5" />
                             )}
                           </div>
@@ -204,7 +187,7 @@ export function NotificationBell({ basePath = "/admin" }: NotificationBellProps)
                             })}
                           </p>
                         </div>
-                        {notification.action_url && (
+                        {notification.link && (
                           <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />
                         )}
                       </div>

@@ -38,10 +38,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ChecklistItem {
   id: string;
-  key: string;
-  title: string;
+  label: string;
   description: string | null;
-  sort_order: number;
+  display_order: number;
 }
 
 interface ChecklistResponse {
@@ -51,9 +50,9 @@ interface ChecklistResponse {
 }
 
 interface BriefingContent {
-  key: string;
+  section_key: string;
   title: string;
-  content: Record<string, unknown>;
+  content: string;
 }
 
 const MODULES = [
@@ -186,22 +185,22 @@ export default function BriefingPage() {
 
       // Log access
       await supabase.from("briefing_link_access_logs").insert({
-        link_id: linkData.id,
+        briefing_link_id: linkData.id,
         user_agent: navigator.userAgent,
       });
 
       // Update access count using security definer function (bypasses RLS)
-      await supabase.rpc('increment_briefing_link_access', { link_token: token });
+      await supabase.rpc('increment_briefing_link_access', { _link_id: linkData.id });
 
       // Load checklist items
       const { data: items } = await supabase
         .from("briefing_checklist_items")
         .select("*")
         .eq("is_active", true)
-        .order("sort_order");
+        .order("display_order");
 
       if (items) {
-        setChecklistItems(items);
+        setChecklistItems(items as ChecklistItem[]);
         // Initialize responses
         const initialResponses: Record<string, ChecklistResponse> = {};
         items.forEach(item => {
@@ -219,12 +218,12 @@ export default function BriefingPage() {
         .from("briefing_content")
         .select("*")
         .eq("is_active", true)
-        .order("sort_order");
+        .order("display_order");
 
       if (content) {
         const contentMap: Record<string, BriefingContent> = {};
         content.forEach(c => {
-          contentMap[c.key] = c as unknown as BriefingContent;
+          contentMap[c.section_key] = c as unknown as BriefingContent;
         });
         setBriefingContent(contentMap);
       }
@@ -262,18 +261,18 @@ export default function BriefingPage() {
     try {
       // Prepare responses array for the RPC function
       const responsesArray = Object.values(responses).map(r => ({
-        item_id: r.item_id,
-        decision: r.decision,
-        comment: r.comment || null
+        checklist_item_id: r.item_id,
+        is_checked: r.decision === "approved"
       }));
 
       // Use security definer function to submit approval (bypasses RLS)
       const { error: rpcError } = await supabase.rpc('submit_briefing_approval', {
-        _token: token!,
-        _approver_name: approverName,
-        _approver_email: approverEmail,
-        _status: status,
-        _notes: finalNotes || null,
+        _link_id: linkData?.id || "",
+        _client_name: approverName,
+        _client_email: approverEmail,
+        _ip: "",
+        _user_agent: navigator.userAgent,
+        _signature: finalNotes || "",
         _responses: responsesArray
       });
 

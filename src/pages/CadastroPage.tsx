@@ -102,15 +102,19 @@ export default function CadastroPage() {
       }
 
       if (authData.user) {
-        // Use secure RPC to link or create client (bypasses RLS safely)
-        const { error: linkError } = await supabase.rpc("link_user_to_client", {
-          _user_id: authData.user.id,
-          _email: formData.email.trim().toLowerCase(),
-          _full_name: formData.fullName,
-          _phone: formData.phone,
-        });
-
-        if (linkError) {
+        // The link_user_to_client trigger on auth.users handles this automatically
+        // Just update the client record if needed
+        try {
+          await supabase
+            .from("clients")
+            .update({ 
+              user_id: authData.user.id, 
+              full_name: formData.fullName,
+              phone: formData.phone 
+            })
+            .eq("email", formData.email.trim().toLowerCase())
+            .is("user_id", null);
+        } catch (linkError) {
           console.error("Error linking client:", linkError);
         }
 

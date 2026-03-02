@@ -33,7 +33,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { useCheckInNotifications } from "@/hooks/useCheckInNotifications";
 
-type AppointmentStatus = "pending" | "confirmed" | "rescheduled" | "canceled" | "completed" | "pending_payment";
+type AppointmentStatus = "pending" | "confirmed" | "rescheduled" | "canceled" | "completed";
 
 export default function AgendamentosPage() {
   // Enable real-time check-in notifications
