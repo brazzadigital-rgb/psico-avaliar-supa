@@ -91,14 +91,24 @@ serve(async (req) => {
       );
     }
 
-    // Assign role to the new user
+    // The handle_new_user trigger auto-inserts 'client' role.
+    // If the desired role is different, replace it.
+    if (role !== "client") {
+      // Remove the auto-created client role
+      await supabaseAdmin
+        .from("user_roles")
+        .delete()
+        .eq("user_id", newUser.user.id)
+        .eq("role", "client");
+    }
+
+    // Assign the desired role (upsert to avoid duplicates)
     const { error: roleError } = await supabaseAdmin
       .from("user_roles")
-      .insert({ user_id: newUser.user.id, role });
+      .upsert({ user_id: newUser.user.id, role }, { onConflict: "user_id,role" });
 
     if (roleError) {
       console.error("Error assigning role:", roleError);
-      // User was created, but role assignment failed - try to clean up
       await supabaseAdmin.auth.admin.deleteUser(newUser.user.id);
       return new Response(
         JSON.stringify({ error: "Erro ao atribuir função ao usuário" }),
