@@ -1,5 +1,6 @@
 import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { ProfileMenu } from "@/components/profile/ProfileMenu";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,6 @@ import {
   LayoutDashboard,
   Calendar,
   User,
-  LogOut,
   Menu,
   X,
   MessageCircle,
@@ -138,29 +138,7 @@ export default function ClienteLayout() {
         </div>
 
         {/* User Menu */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="font-medium text-primary">
-                {clientData?.full_name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-medium text-sm truncate">
-                {clientData?.full_name || user.email}
-              </div>
-              <div className="text-xs text-muted-foreground">Cliente</div>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            className="w-full gap-2"
-            onClick={() => signOut()}
-          >
-            <LogOut className="w-4 h-4" />
-            Sair
-          </Button>
-        </div>
+        <ProfileMenu variant="client" />
       </aside>
 
       {/* Mobile Overlay */}

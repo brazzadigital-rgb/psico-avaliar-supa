@@ -1,6 +1,7 @@
 import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { usePermissions, PermissionGuard } from "@/hooks/usePermissions";
+import { ProfileMenu } from "@/components/profile/ProfileMenu";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
@@ -9,7 +10,6 @@ import {
   Briefcase,
   Clock,
   Settings,
-  LogOut,
   Menu,
   X,
   FileText,
@@ -17,7 +17,6 @@ import {
   Mail,
   MessageSquare,
   HelpCircle,
-  Home,
   ClipboardCheck,
   UserCog,
   Shield,
@@ -211,41 +210,7 @@ export default function AdminLayout() {
         </nav>
 
         {/* User Menu - Fixed at bottom */}
-        <div className="flex-shrink-0 p-4 border-t border-border bg-card">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="font-medium text-primary">
-                {user.email?.[0].toUpperCase()}
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-medium text-sm truncate">{user.email}</div>
-              <div className="text-xs text-muted-foreground capitalize">
-                {userRole === 'receptionist' ? 'Recepcionista' : 
-                 userRole === 'professional' ? 'Profissional' : 
-                 userRole === 'admin' ? 'Administrador' : userRole}
-              </div>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            className="w-full gap-2 mb-2"
-            asChild
-          >
-            <Link to="/">
-              <Home className="w-4 h-4" />
-              Voltar ao Site
-            </Link>
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full gap-2"
-            onClick={() => signOut()}
-          >
-            <LogOut className="w-4 h-4" />
-            Sair
-          </Button>
-        </div>
+        <ProfileMenu variant="admin" />
       </aside>
 
       {/* Mobile Overlay */}
