@@ -1,0 +1,2 @@
+-- Add 'client' to app_role enum (separate migration)
+ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'client';
