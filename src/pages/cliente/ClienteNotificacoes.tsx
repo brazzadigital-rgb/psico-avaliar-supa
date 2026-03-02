@@ -93,8 +93,8 @@ export default function ClienteNotificacoes() {
     if (!notification.read_at) {
       markAsRead([notification.id]);
     }
-    if (notification.action_url) {
-      navigate(notification.action_url);
+    if (notification.link) {
+      navigate(notification.link);
     }
   };
 
@@ -273,7 +273,7 @@ export default function ClienteNotificacoes() {
                             </span>
                           </div>
                         </div>
-                        {notification.action_url && (
+                        {notification.link && (
                           <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />
                         )}
                       </div>
