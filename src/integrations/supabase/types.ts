@@ -1624,6 +1624,7 @@ export type Database = {
           price_from_amount: number | null
           price_mode: string
           require_payment_to_confirm: boolean
+          show_in_financing: boolean
           show_price_publicly: boolean
           updated_at: string
         }
@@ -1645,6 +1646,7 @@ export type Database = {
           price_from_amount?: number | null
           price_mode?: string
           require_payment_to_confirm?: boolean
+          show_in_financing?: boolean
           show_price_publicly?: boolean
           updated_at?: string
         }
@@ -1666,6 +1668,7 @@ export type Database = {
           price_from_amount?: number | null
           price_mode?: string
           require_payment_to_confirm?: boolean
+          show_in_financing?: boolean
           show_price_publicly?: boolean
           updated_at?: string
         }

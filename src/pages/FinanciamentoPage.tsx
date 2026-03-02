@@ -9,12 +9,8 @@ import { useState } from "react";
 import { CheckCircle2, Calculator, CreditCard, Clock, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useWhatsApp } from "@/hooks/useWhatsApp";
-
-const services = [
-  "Avaliação Psicológica",
-  "Avaliação Neuropsicológica",
-  "Avaliação Psicológica + Neuropsicológica",
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function FinanciamentoPage() {
   const { toast } = useToast();
@@ -27,9 +23,22 @@ export default function FinanciamentoPage() {
     observations: "",
   });
 
+  const { data: financingServices = [] } = useQuery({
+    queryKey: ["financing-services"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("id, name")
+        .eq("is_active", true)
+        .order("display_order");
+      if (error) throw error;
+      // Filter by show_in_financing (column added via migration, not yet in generated types)
+      return (data || []).filter((s: any) => s.show_in_financing === true) as { id: string; name: string }[];
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send the form data to the backend
     const message = `Olá! Gostaria de simular o financiamento.\n\nNome: ${formData.name}\nServiço: ${formData.service}\n${formData.observations ? `Observações: ${formData.observations}` : ""}`;
     window.open(`https://wa.me/55${phoneDigits}?text=${encodeURIComponent(message)}`, "_blank");
     toast({
@@ -132,17 +141,19 @@ export default function FinanciamentoPage() {
                 ))}
               </div>
 
-              <div className="mt-8 p-6 bg-primary/5 rounded-2xl">
-                <h3 className="font-display font-bold mb-4">Serviços Elegíveis</h3>
-                <ul className="space-y-2">
-                  {services.map((service, index) => (
-                    <li key={index} className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className="w-5 h-5 text-accent" />
-                      {service}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {financingServices.length > 0 && (
+                <div className="mt-8 p-6 bg-primary/5 rounded-2xl">
+                  <h3 className="font-display font-bold mb-4">Serviços Elegíveis</h3>
+                  <ul className="space-y-2">
+                    {financingServices.map((service) => (
+                      <li key={service.id} className="flex items-center gap-2 text-sm">
+                        <CheckCircle2 className="w-5 h-5 text-accent" />
+                        {service.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
 
             {/* Form */}
@@ -193,9 +204,9 @@ export default function FinanciamentoPage() {
                       <SelectValue placeholder="Selecione o serviço" />
                     </SelectTrigger>
                     <SelectContent>
-                      {services.map((service) => (
-                        <SelectItem key={service} value={service}>
-                          {service}
+                      {financingServices.map((service) => (
+                        <SelectItem key={service.id} value={service.name}>
+                          {service.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
