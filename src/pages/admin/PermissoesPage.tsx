@@ -35,8 +35,8 @@ import { Key, Search, Plus, Loader2 } from "lucide-react";
 
 interface Permission {
   id: string;
-  key: string;
-  name: string;
+  permission_key: string;
+  permission_name: string;
   description: string | null;
   category: string;
   created_at: string;
@@ -77,8 +77,8 @@ export default function PermissoesPage() {
       const { error } = await supabase
         .from("permissions")
         .insert({
-          key: perm.key,
-          name: perm.name,
+          permission_key: perm.key,
+          permission_name: perm.name,
           description: perm.description || null,
           category: perm.category
         });
@@ -102,8 +102,8 @@ export default function PermissoesPage() {
   // Filter permissions
   const filteredPermissions = permissions?.filter(perm => {
     const matchesSearch = 
-      perm.key.toLowerCase().includes(search.toLowerCase()) ||
-      perm.name.toLowerCase().includes(search.toLowerCase());
+      perm.permission_key.toLowerCase().includes(search.toLowerCase()) ||
+      perm.permission_name.toLowerCase().includes(search.toLowerCase());
     
     const matchesCategory = categoryFilter === "all" || perm.category === categoryFilter;
     
@@ -211,11 +211,11 @@ export default function PermissoesPage() {
                     <div className="flex items-center gap-2">
                       <Key className="w-4 h-4 text-muted-foreground" />
                       <code className="text-sm bg-muted px-2 py-0.5 rounded">
-                        {perm.key}
+                        {perm.permission_key}
                       </code>
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">{perm.name}</TableCell>
+                  <TableCell className="font-medium">{perm.permission_name}</TableCell>
                   <TableCell className="hidden md:table-cell text-muted-foreground">
                     {perm.description || '-'}
                   </TableCell>

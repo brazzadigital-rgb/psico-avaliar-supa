@@ -467,7 +467,7 @@ export default function AgendarPage() {
         end_time: formData.time,
         modality: formData.modality,
         reason_for_visit: formData.reasonForVisit || null,
-        status: appointmentStatus,
+        status: appointmentStatus as "pending" | "confirmed",
         code: "",
       };
       console.log("[Agendar] Payload do agendamento:", appointmentPayload);

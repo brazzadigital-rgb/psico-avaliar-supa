@@ -21,10 +21,10 @@ interface Plan {
   id: string;
   name: string;
   description: string | null;
-  price: number | null;
-  price_display: string | null;
-  benefits: string[] | null;
-  is_highlighted: boolean;
+  price: number;
+  duration_days: number;
+  sessions_included: number | null;
+  features: unknown;
   is_active: boolean;
   display_order: number;
 }
@@ -36,9 +36,9 @@ export default function PlanosPage() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    price_display: "",
-    benefits: "",
-    is_highlighted: false,
+    price: "",
+    duration_days: "30",
+    sessions_included: "",
     is_active: true,
   });
 
@@ -59,9 +59,9 @@ export default function PlanosPage() {
       const payload = {
         name: data.name,
         description: data.description || null,
-        price_display: data.price_display || null,
-        benefits: data.benefits ? data.benefits.split("\n").filter(Boolean) : null,
-        is_highlighted: data.is_highlighted,
+        price: parseFloat(data.price) || 0,
+        duration_days: parseInt(data.duration_days) || 30,
+        sessions_included: data.sessions_included ? parseInt(data.sessions_included) : null,
         is_active: data.is_active,
       };
 
@@ -120,9 +120,9 @@ export default function PlanosPage() {
     setFormData({
       name: "",
       description: "",
-      price_display: "",
-      benefits: "",
-      is_highlighted: false,
+      price: "",
+      duration_days: "30",
+      sessions_included: "",
       is_active: true,
     });
   };
@@ -132,9 +132,9 @@ export default function PlanosPage() {
     setFormData({
       name: plan.name,
       description: plan.description || "",
-      price_display: plan.price_display || "",
-      benefits: plan.benefits?.join("\n") || "",
-      is_highlighted: plan.is_highlighted,
+      price: String(plan.price || ""),
+      duration_days: String(plan.duration_days || 30),
+      sessions_included: plan.sessions_included ? String(plan.sessions_included) : "",
       is_active: plan.is_active,
     });
     setIsDialogOpen(true);
@@ -173,17 +173,9 @@ export default function PlanosPage() {
               key={plan.id}
               className={cn(
                 "relative",
-                plan.is_highlighted && "ring-2 ring-primary",
                 !plan.is_active && "opacity-60"
               )}
             >
-              {plan.is_highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-primary text-white text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1">
-                    <Star className="w-3 h-3" /> Recomendado
-                  </span>
-                </div>
-              )}
               <CardContent className="pt-8 pb-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
@@ -201,18 +193,18 @@ export default function PlanosPage() {
                 </div>
 
                 <div className="text-2xl font-bold text-primary mb-4">
-                  {plan.price_display || "Sob consulta"}
+                  {plan.price ? `R$ ${plan.price}` : "Sob consulta"}
                 </div>
 
-                {plan.benefits && plan.benefits.length > 0 && (
-                  <ul className="space-y-2 mb-6">
-                    {plan.benefits.map((benefit, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-sm">
-                        <span className="text-primary">✓</span>
-                        {benefit}
-                      </li>
-                    ))}
-                  </ul>
+                {plan.duration_days && (
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Duração: {plan.duration_days} dias
+                  </p>
+                )}
+                {plan.sessions_included && (
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {plan.sessions_included} sessões incluídas
+                  </p>
                 )}
 
                 <div className="flex gap-2">
@@ -267,34 +259,37 @@ export default function PlanosPage() {
             </div>
 
             <div className="space-y-2">
-              <Label>Preço (exibição)</Label>
+              <Label>Preço (R$)</Label>
               <Input
-                value={formData.price_display}
-                onChange={(e) => setFormData({ ...formData, price_display: e.target.value })}
-                placeholder="Ex: R$ 450/mês ou Sob consulta"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                placeholder="Ex: 450.00"
+                type="number"
+                step="0.01"
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Benefícios (um por linha)</Label>
-              <Textarea
-                value={formData.benefits}
-                onChange={(e) => setFormData({ ...formData, benefits: e.target.value })}
-                rows={5}
-                placeholder="1 sessão semanal de 50 min&#10;Atendimento presencial ou online&#10;Acompanhamento contínuo"
+              <Label>Duração (dias)</Label>
+              <Input
+                value={formData.duration_days}
+                onChange={(e) => setFormData({ ...formData, duration_days: e.target.value })}
+                placeholder="30"
+                type="number"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Sessões incluídas</Label>
+              <Input
+                value={formData.sessions_included}
+                onChange={(e) => setFormData({ ...formData, sessions_included: e.target.value })}
+                placeholder="Ex: 4"
+                type="number"
               />
             </div>
 
             <div className="flex items-center gap-6">
-              <label className="flex items-center gap-2">
-                <Switch
-                  checked={formData.is_highlighted}
-                  onCheckedChange={(checked) =>
-                    setFormData({ ...formData, is_highlighted: checked })
-                  }
-                />
-                <span className="text-sm">Destacar</span>
-              </label>
               <label className="flex items-center gap-2">
                 <Switch
                   checked={formData.is_active}

@@ -19,10 +19,10 @@ import EmailVisualEditor from "@/components/admin/email-editor/EmailVisualEditor
 
 interface EmailTemplate {
   id: string;
-  key: string;
+  slug: string;
   name: string;
   subject: string;
-  html_content: string;
+  html_body: string;
   variables: string[] | null;
   is_active: boolean;
 }
@@ -70,7 +70,7 @@ export default function EmailTemplatesPage() {
         .from("email_templates")
         .update({
           subject: data.subject,
-          html_content: data.html_content,
+          html_body: data.html_content,
           is_active: data.is_active,
           updated_at: new Date().toISOString(),
         })
@@ -98,7 +98,7 @@ export default function EmailTemplatesPage() {
     setEditingTemplate(template);
     setFormData({
       subject: template.subject,
-      html_content: template.html_content,
+      html_content: template.html_body,
       is_active: template.is_active,
     });
     setIsDialogOpen(true);
@@ -183,7 +183,7 @@ export default function EmailTemplatesPage() {
                       <strong>Assunto:</strong> {template.subject}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Chave: <code className="bg-muted px-1 rounded">{template.key}</code>
+                      Chave: <code className="bg-muted px-1 rounded">{template.slug}</code>
                     </p>
                   </div>
                   <Button variant="outline" size="sm" onClick={() => handleEdit(template)}>

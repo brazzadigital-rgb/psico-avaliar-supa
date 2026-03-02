@@ -344,7 +344,7 @@ export default function CheckInPage() {
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Horário</span>
                 <span className="text-sm font-semibold">
-                  {appointment.scheduled_time?.slice(0, 5)} - {appointment.end_time?.slice(0, 5)}
+                  {appointment.scheduled_time?.slice(0, 5)}
                 </span>
               </div>
               

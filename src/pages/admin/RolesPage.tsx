@@ -27,8 +27,8 @@ type AppRole = Database["public"]["Enums"]["app_role"];
 
 interface Permission {
   id: string;
-  key: string;
-  name: string;
+  permission_key: string;
+  permission_name: string;
   description: string | null;
   category: string;
 }
@@ -255,9 +255,9 @@ export default function RolesPage() {
                                   />
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
-                                      <span className="font-medium text-sm">{permission.name}</span>
+                                      <span className="font-medium text-sm">{permission.permission_name}</span>
                                       <code className="text-xs bg-muted px-1.5 py-0.5 rounded">
-                                        {permission.key}
+                                        {permission.permission_key}
                                       </code>
                                     </div>
                                     {permission.description && (

@@ -50,7 +50,7 @@ export default function PagamentosConfigPage() {
   });
 
   // State for form
-  const [configs, setConfigs] = useState<Record<string, Partial<PaymentProviderConfig>>>({});
+  const [configs, setConfigs] = useState<Record<string, any>>({});
   const [settings, setSettings] = useState<Partial<PaymentSettings>>({});
 
   useEffect(() => {

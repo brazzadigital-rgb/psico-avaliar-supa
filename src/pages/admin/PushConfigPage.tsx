@@ -36,9 +36,8 @@ import { CopyButton } from "@/components/ui/copy-button";
 interface PushConfig {
   id: string;
   vapid_public_key: string | null;
-  vapid_private_key_encrypted: string | null;
-  sender_name: string;
-  is_configured: boolean;
+  vapid_private_key: string | null;
+  vapid_email: string | null;
   updated_at: string;
 }
 
@@ -46,10 +45,10 @@ interface PushSubscription {
   id: string;
   user_id: string;
   endpoint: string;
-  device_label: string | null;
   user_agent: string | null;
   created_at: string;
-  last_used_at: string | null;
+  p256dh: string;
+  auth: string;
 }
 
 export default function PushConfigPage() {
@@ -84,7 +83,7 @@ export default function PushConfigPage() {
       const { data, error } = await supabase
         .from("push_subscriptions")
         .select("*")
-        .is("revoked_at", null)
+        .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as PushSubscription[];
@@ -95,7 +94,7 @@ export default function PushConfigPage() {
   useEffect(() => {
     if (config) {
       setVapidPublicKey(config.vapid_public_key || "");
-      setSenderName(config.sender_name || "Psicoavaliar");
+      setSenderName("Psicoavaliar");
     }
   }, [config]);
 
@@ -190,12 +189,12 @@ export default function PushConfigPage() {
             <div className="flex items-center gap-4">
               <div
                 className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                  config?.is_configured
+                  config?.vapid_public_key
                     ? "bg-green-500/10 text-green-600"
                     : "bg-yellow-500/10 text-yellow-600"
                 }`}
               >
-                {config?.is_configured ? (
+                {config?.vapid_public_key ? (
                   <CheckCircle2 className="w-6 h-6" />
                 ) : (
                   <AlertTriangle className="w-6 h-6" />
@@ -203,19 +202,19 @@ export default function PushConfigPage() {
               </div>
               <div>
                 <h3 className="font-semibold">
-                  {config?.is_configured
+                  {config?.vapid_public_key
                     ? "Push Notifications Configurado"
                     : "Push Notifications Não Configurado"}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {config?.is_configured
+                  {config?.vapid_public_key
                     ? `${subscriptions.length} dispositivo(s) registrado(s)`
                     : "Configure as chaves VAPID para ativar"}
                 </p>
               </div>
             </div>
-            <Badge variant={config?.is_configured ? "default" : "secondary"}>
-              {config?.is_configured ? "Ativo" : "Inativo"}
+            <Badge variant={config?.vapid_public_key ? "default" : "secondary"}>
+              {config?.vapid_public_key ? "Ativo" : "Inativo"}
             </Badge>
           </div>
         </CardContent>
@@ -287,7 +286,7 @@ export default function PushConfigPage() {
               <div>
                 <Label htmlFor="vapid_private">
                   Chave Privada (Private Key){" "}
-                  {config?.vapid_private_key_encrypted && (
+                  {config?.vapid_private_key && (
                     <Badge variant="outline" className="ml-2 text-xs">
                       Configurada
                     </Badge>
@@ -299,7 +298,7 @@ export default function PushConfigPage() {
                   value={vapidPrivateKey}
                   onChange={(e) => setVapidPrivateKey(e.target.value)}
                   placeholder={
-                    config?.vapid_private_key_encrypted
+                    config?.vapid_private_key
                       ? "••••••••••••••••"
                       : "Digite a chave privada..."
                   }
@@ -362,7 +361,7 @@ export default function PushConfigPage() {
                           <div className="flex items-center gap-2">
                             <Smartphone className="w-4 h-4 text-muted-foreground" />
                             <div>
-                              <p className="font-medium">{sub.device_label || "Navegador"}</p>
+                              <p className="font-medium">{sub.user_agent?.slice(0, 30) || "Navegador"}</p>
                               <p className="text-xs text-muted-foreground truncate max-w-xs">
                                 {sub.endpoint.slice(0, 50)}...
                               </p>
@@ -373,9 +372,7 @@ export default function PushConfigPage() {
                           {format(new Date(sub.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
                         </TableCell>
                         <TableCell>
-                          {sub.last_used_at
-                            ? format(new Date(sub.last_used_at), "dd/MM/yyyy HH:mm", { locale: ptBR })
-                            : "-"}
+                          -
                         </TableCell>
                         <TableCell>
                           <Button
@@ -385,7 +382,7 @@ export default function PushConfigPage() {
                             onClick={async () => {
                               await supabase
                                 .from("push_subscriptions")
-                                .update({ revoked_at: new Date().toISOString() })
+                                .delete()
                                 .eq("id", sub.id);
                               queryClient.invalidateQueries({ queryKey: ["push-subscriptions-admin"] });
                               toast.success("Dispositivo removido");

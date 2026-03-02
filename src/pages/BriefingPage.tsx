@@ -149,6 +149,7 @@ export default function BriefingPage() {
   const [approverName, setApproverName] = useState("");
   const [approverEmail, setApproverEmail] = useState("");
   const [finalNotes, setFinalNotes] = useState("");
+  const [briefingLinkId, setBriefingLinkId] = useState<string>("");
 
   useEffect(() => {
     if (token) {
@@ -181,8 +182,8 @@ export default function BriefingPage() {
         return;
       }
 
+      setBriefingLinkId(linkData.id);
       setValidToken(true);
-
       // Log access
       await supabase.from("briefing_link_access_logs").insert({
         briefing_link_id: linkData.id,
@@ -267,7 +268,7 @@ export default function BriefingPage() {
 
       // Use security definer function to submit approval (bypasses RLS)
       const { error: rpcError } = await supabase.rpc('submit_briefing_approval', {
-        _link_id: linkData?.id || "",
+        _link_id: briefingLinkId,
         _client_name: approverName,
         _client_email: approverEmail,
         _ip: "",
@@ -964,7 +965,7 @@ export default function BriefingPage() {
                 {checklistItems.map((item) => (
                   <div key={item.id} className="p-4 border rounded-lg space-y-4">
                     <div>
-                      <h4 className="font-semibold">{item.title}</h4>
+                      <h4 className="font-semibold">{item.label}</h4>
                       {item.description && (
                         <p className="text-sm text-muted-foreground">{item.description}</p>
                       )}
