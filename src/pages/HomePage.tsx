@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Brain, Heart, Users, Baby, GraduationCap, Stethoscope, CheckCircle2, ArrowRight, Calendar, Video, MapPin, Sparkles, Shield, Clock, Star, ArrowUpRight, BookOpen, MessageCircle } from "lucide-react";
 import { useWhatsApp } from "@/hooks/useWhatsApp";
+import { FinanciamentoHighlight } from "@/components/home/FinanciamentoHighlight";
 
 // Map local images to slugs
 const blogImageMap: Record<string, string> = {
@@ -350,6 +351,11 @@ export default function HomePage() {
           </div>
         </div>
       </Section>
+
+      {/* ============================================ */}
+      {/* FINANCIAMENTO HIGHLIGHT - Carro-Chefe        */}
+      {/* ============================================ */}
+      <FinanciamentoHighlight />
 
       {/* ============================================ */}
       {/* SERVICES SECTION                            */}
