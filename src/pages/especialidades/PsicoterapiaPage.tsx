@@ -15,7 +15,7 @@ import {
   Brain,
   Shield,
 } from "lucide-react";
-
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 const approaches = [
   {
     title: "Terapia Cognitivo-Comportamental (TCC)",
@@ -63,6 +63,7 @@ const benefits = [
 ];
 
 export default function PsicoterapiaPage() {
+  const { getWhatsAppUrl } = useWhatsApp();
   return (
     <Layout>
       {/* Hero Section */}
@@ -97,7 +98,7 @@ export default function PsicoterapiaPage() {
 
               <div className="flex flex-wrap gap-4">
                 <a
-                  href="https://wa.me/5551992809471?text=Olá! Gostaria de agendar uma sessão de psicoterapia."
+                  href={getWhatsAppUrl("Olá! Gostaria de agendar uma sessão de psicoterapia.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary font-semibold rounded-full hover:bg-white/90 transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
@@ -260,7 +261,7 @@ export default function PsicoterapiaPage() {
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                   <a
-                    href="https://wa.me/5551992809471?text=Olá! Quero saber mais sobre os planos de assinatura."
+                    href={getWhatsAppUrl("Olá! Quero saber mais sobre os planos de assinatura.")}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-3 px-8 py-4 border border-border text-foreground font-medium rounded-full hover:bg-muted transition-all duration-300"
@@ -285,7 +286,7 @@ export default function PsicoterapiaPage() {
             O primeiro passo é o mais importante. Agende uma conversa inicial sem compromisso.
           </p>
           <a
-            href="https://wa.me/5551992809471?text=Olá! Gostaria de agendar uma sessão de psicoterapia."
+            href={getWhatsAppUrl("Olá! Gostaria de agendar uma sessão de psicoterapia.")}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-8 py-4 btn-premium text-white font-semibold rounded-full hover:scale-105 transition-all duration-300 animate-fade-in-up"

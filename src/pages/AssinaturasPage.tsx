@@ -6,6 +6,7 @@ import { Section, SectionHeader } from "@/components/ui/section";
 import { PremiumCard, IconBox, FeatureList } from "@/components/ui/premium-card";
 import { PremiumAccordion, PremiumAccordionItem, PremiumAccordionTrigger, PremiumAccordionContent } from "@/components/ui/premium-accordion";
 import { ScrollAnimate } from "@/hooks/useScrollAnimation";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 import heroImage from "@/assets/hero-assinaturas.jpg";
 import {
   CheckCircle2,
@@ -128,6 +129,7 @@ const included = [
 ];
 
 export default function AssinaturasPage() {
+  const { getWhatsAppUrl } = useWhatsApp();
   return (
     <Layout>
       {/* Hero */}
@@ -205,7 +207,7 @@ export default function AssinaturasPage() {
                       size="lg"
                     >
                       <a
-                        href={`https://wa.me/5551992809471?text=Olá! Tenho interesse no plano ${plan.name}.`}
+                        href={getWhatsAppUrl(`Olá! Tenho interesse no plano ${plan.name}.`)}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -305,7 +307,7 @@ export default function AssinaturasPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="https://wa.me/5551992809471?text=Olá! Preciso de ajuda para escolher um plano."
+                href={getWhatsAppUrl("Olá! Preciso de ajuda para escolher um plano.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary font-semibold rounded-full hover:bg-white/90 transition-all duration-300 hover:scale-105 shadow-xl"

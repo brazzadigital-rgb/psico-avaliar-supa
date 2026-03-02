@@ -7,6 +7,7 @@ import { PremiumCard, IconBox, FeatureList } from "@/components/ui/premium-card"
 import { ScrollAnimate } from "@/hooks/useScrollAnimation";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 import heroImage from "@/assets/hero-especialidades.jpg";
 import {
   Brain,
@@ -142,6 +143,7 @@ const howItWorks = [
 const filterTags = ["Todos", "Infantil", "Adulto", "Online", "Presencial"];
 
 export default function EspecialidadesPage() {
+  const { getWhatsAppUrl } = useWhatsApp();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState("Todos");
 
@@ -248,7 +250,7 @@ export default function EspecialidadesPage() {
                         </Button>
                         <Button asChild variant="outline" className="rounded-full border-2">
                           <a
-                            href="https://wa.me/5551992809471?text=Olá! Gostaria de saber mais sobre esta especialidade."
+                            href={getWhatsAppUrl("Olá! Gostaria de saber mais sobre esta especialidade.")}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -313,7 +315,7 @@ export default function EspecialidadesPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="https://wa.me/5551992809471?text=Olá! Preciso de ajuda para entender qual especialidade procurar."
+                href={getWhatsAppUrl("Olá! Preciso de ajuda para entender qual especialidade procurar.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary font-semibold rounded-full hover:bg-white/90 transition-all duration-300 hover:scale-105 shadow-xl"

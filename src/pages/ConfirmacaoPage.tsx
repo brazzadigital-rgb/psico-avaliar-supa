@@ -1,4 +1,5 @@
 import { Link, useSearchParams } from "react-router-dom";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { 
@@ -64,6 +65,7 @@ const CelebrationIcon = ({ Icon, delay, left, top }: { Icon: any; delay: number;
 
 export default function ConfirmacaoPage() {
   const [searchParams] = useSearchParams();
+  const { getWhatsAppUrl } = useWhatsApp();
   const code = searchParams.get("code");
   const [showConfetti, setShowConfetti] = useState(true);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
@@ -678,7 +680,7 @@ export default function ConfirmacaoPage() {
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <a
-                  href="https://wa.me/5551992809471"
+                  href={getWhatsAppUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] text-white font-display font-semibold rounded-xl hover:bg-[#20bd5a] transition-all shadow-lg shadow-[#25D366]/25"

@@ -15,7 +15,7 @@ import {
   Trophy,
   BookOpen,
 } from "lucide-react";
-
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 const whatIsABA = [
   {
     icon: Target,
@@ -89,6 +89,7 @@ const faqs = [
 ];
 
 export default function TerapiaABAPage() {
+  const { getWhatsAppUrl } = useWhatsApp();
   return (
     <Layout>
       {/* Hero Section */}
@@ -123,7 +124,7 @@ export default function TerapiaABAPage() {
 
               <div className="flex flex-wrap gap-4">
                 <a
-                  href="https://wa.me/5551992809471?text=Olá! Gostaria de saber mais sobre a Terapia ABA."
+                  href={getWhatsAppUrl("Olá! Gostaria de saber mais sobre a Terapia ABA.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary font-semibold rounded-full hover:bg-white/90 transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
@@ -133,7 +134,7 @@ export default function TerapiaABAPage() {
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>
                 <a
-                  href="https://wa.me/5551992809471?text=Olá! Tenho dúvidas sobre Terapia ABA."
+                  href={getWhatsAppUrl("Olá! Tenho dúvidas sobre Terapia ABA.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 px-8 py-4 border border-white/30 text-white font-medium rounded-full hover:bg-white/10 backdrop-blur-sm transition-all duration-300"
@@ -232,7 +233,7 @@ export default function TerapiaABAPage() {
                     Oferecemos treinamento e orientação para pais e cuidadores, permitindo que as estratégias sejam aplicadas no ambiente familiar e potencializando os resultados da terapia.
                   </p>
                   <a
-                    href="https://wa.me/5551992809471?text=Olá! Quero saber mais sobre a orientação familiar na ABA."
+                    href={getWhatsAppUrl("Olá! Quero saber mais sobre a orientação familiar na ABA.")}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-primary font-medium hover:text-accent transition-colors group"
@@ -294,7 +295,7 @@ export default function TerapiaABAPage() {
                 Esclarecemos as principais dúvidas sobre a Terapia ABA e nosso atendimento.
               </p>
               <a
-                href="https://wa.me/5551992809471?text=Olá! Tenho uma dúvida sobre Terapia ABA."
+                href={getWhatsAppUrl("Olá! Tenho uma dúvida sobre Terapia ABA.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-primary font-medium hover:text-accent transition-colors group"
@@ -330,7 +331,7 @@ export default function TerapiaABAPage() {
             Inicie o acompanhamento com nossa equipe especializada em ABA e veja o potencial do seu filho florescer.
           </p>
           <a
-            href="https://wa.me/5551992809471?text=Olá! Quero iniciar a Terapia ABA."
+            href={getWhatsAppUrl("Olá! Quero iniciar a Terapia ABA.")}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-8 py-4 btn-premium text-white font-semibold rounded-full hover:scale-105 transition-all duration-300 animate-fade-in-up"

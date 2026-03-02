@@ -15,6 +15,7 @@ import blogFamilia from "@/assets/blog/familia-apoio.jpg";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Brain, Heart, Users, Baby, GraduationCap, Stethoscope, CheckCircle2, ArrowRight, Calendar, Video, MapPin, Sparkles, Shield, Clock, Star, ArrowUpRight, BookOpen, MessageCircle } from "lucide-react";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 
 // Map local images to slugs
 const blogImageMap: Record<string, string> = {
@@ -123,6 +124,7 @@ interface BlogPost {
   } | null;
 }
 export default function HomePage() {
+  const { getWhatsAppUrl } = useWhatsApp();
   const {
     data: blogPosts
   } = useQuery({
@@ -232,7 +234,7 @@ export default function HomePage() {
               {/* CTA Buttons - Simplified on mobile */}
               <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 md:gap-4 mb-8 md:mb-12 animate-fade-in" style={{ animationDelay: '0.4s' }}>
                 <a 
-                  href="https://wa.me/5551992809471?text=Olá! Quero agendar uma avaliação." 
+                  href={getWhatsAppUrl("Olá! Quero agendar uma avaliação.")} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="inline-flex items-center justify-center gap-2 md:gap-3 px-6 md:px-8 py-3 md:py-4 bg-white text-primary font-semibold rounded-xl md:rounded-2xl group text-sm md:text-base shadow-lg md:shadow-xl md:btn-magnetic"
@@ -582,7 +584,7 @@ export default function HomePage() {
             </p>
             
             <div className="flex flex-wrap justify-center gap-4">
-              <a href="https://wa.me/5551992809471?text=Olá! Gostaria de agendar uma consulta." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 px-10 py-5 bg-white text-primary font-semibold rounded-full hover:bg-white/90 transition-all duration-300 hover:scale-105 hover:shadow-2xl shadow-xl group">
+              <a href={getWhatsAppUrl("Olá! Gostaria de agendar uma consulta.")} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 px-10 py-5 bg-white text-primary font-semibold rounded-full hover:bg-white/90 transition-all duration-300 hover:scale-105 hover:shadow-2xl shadow-xl group">
                 <MessageCircle className="w-5 h-5" />
                 Falar pelo WhatsApp
                 <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />

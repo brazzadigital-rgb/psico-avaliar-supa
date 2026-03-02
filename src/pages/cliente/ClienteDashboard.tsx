@@ -17,9 +17,11 @@ import {
 } from "lucide-react";
 import { format, parseISO, isAfter } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 
 export default function ClienteDashboard() {
   const { user } = useAuth();
+  const { getWhatsAppUrl } = useWhatsApp();
 
   // Check if online scheduling is enabled
   const { data: generalSettings } = useQuery({
@@ -123,7 +125,7 @@ export default function ClienteDashboard() {
 
         <Card className="card-premium hover:shadow-lg transition-all cursor-pointer">
           <a
-            href="https://wa.me/5551992809471?text=Olá! Gostaria de tirar uma dúvida."
+            href={getWhatsAppUrl("Olá! Gostaria de tirar uma dúvida.")}
             target="_blank"
             rel="noopener noreferrer"
           >

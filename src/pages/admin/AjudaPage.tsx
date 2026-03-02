@@ -11,8 +11,10 @@ import {
   Briefcase,
   MessageSquare
 } from "lucide-react";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 
 export default function AjudaPage() {
+  const { getWhatsAppUrl, formattedPhone } = useWhatsApp();
   const guides = [
     {
       id: "home",
@@ -202,12 +204,12 @@ export default function AjudaPage() {
               <p className="text-sm text-muted-foreground">
                 Entre em contato pelo WhatsApp{" "}
                 <a
-                  href="https://wa.me/5551992809471"
+                  href={getWhatsAppUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  (51) 99280-9471
+                  {formattedPhone}
                 </a>{" "}
                 ou envie um e-mail para{" "}
                 <a

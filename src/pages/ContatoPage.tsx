@@ -25,6 +25,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useWhatsApp } from "@/hooks/useWhatsApp";
 
 const contactInfo = [
   {
@@ -71,6 +72,7 @@ const contactInfo = [
 
 export default function ContatoPage() {
   const { toast } = useToast();
+  const { getWhatsAppUrl, formattedPhone, phoneDigits } = useWhatsApp();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -109,7 +111,7 @@ export default function ContatoPage() {
         <div className="flex flex-wrap gap-4 mt-8">
           <Button asChild className="btn-premium text-white rounded-full">
             <a
-              href="https://wa.me/5551992809471?text=Olá! Gostaria de informações sobre atendimento."
+              href={getWhatsAppUrl("Olá! Gostaria de informações sobre atendimento.")}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -336,7 +338,7 @@ export default function ContatoPage() {
                   </Button>
                   <Button asChild variant="outline" className="rounded-full" size="lg">
                     <a
-                      href="https://wa.me/5551992809471?text=Olá! Gostaria de agendar uma consulta."
+                      href={getWhatsAppUrl("Olá! Gostaria de agendar uma consulta.")}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
