@@ -906,3 +906,29 @@
     animation: shine 4s infinite;
   }
 }
+
+/* Availability Calendar - date override styles */
+.availability-calendar .day-available {
+  background-color: hsl(var(--brand-green-vivid)) !important;
+  color: white !important;
+  border-radius: 9999px;
+}
+
+.availability-calendar .day-blocked {
+  background-color: hsl(var(--destructive)) !important;
+  color: white !important;
+  border-radius: 9999px;
+}
+
+/* When a configured date is also selected, show a ring */
+.availability-calendar .day-available.rdp-day_selected {
+  background-color: hsl(var(--brand-green-vivid)) !important;
+  color: white !important;
+  box-shadow: 0 0 0 2px hsl(var(--primary));
+}
+
+.availability-calendar .day-blocked.rdp-day_selected {
+  background-color: hsl(var(--destructive)) !important;
+  color: white !important;
+  box-shadow: 0 0 0 2px hsl(var(--primary));
+}
