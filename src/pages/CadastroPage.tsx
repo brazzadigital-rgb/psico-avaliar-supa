@@ -102,30 +102,40 @@ export default function CadastroPage() {
       }
 
       if (authData.user) {
-        // The link_user_to_client trigger on auth.users handles this automatically
-        // Just update the client record if needed
+        // Try to link to existing client record (e.g. from a previous booking)
         try {
-          await supabase
+          const { data: updatedClients } = await supabase
             .from("clients")
             .update({ 
               user_id: authData.user.id, 
               full_name: formData.fullName,
-              phone: formData.phone 
+              phone: formData.phone,
+              lgpd_consent: true,
+              lgpd_consent_at: new Date().toISOString(),
             })
             .eq("email", formData.email.trim().toLowerCase())
-            .is("user_id", null);
+            .is("user_id", null)
+            .select("id");
+
+          // If no existing client was linked, create a new client record
+          if (!updatedClients || updatedClients.length === 0) {
+            const { error: clientError } = await supabase
+              .from("clients")
+              .insert({
+                user_id: authData.user.id,
+                full_name: formData.fullName,
+                email: formData.email.trim().toLowerCase(),
+                phone: formData.phone,
+                lgpd_consent: true,
+                lgpd_consent_at: new Date().toISOString(),
+              });
+
+            if (clientError) {
+              console.error("Error creating client record:", clientError);
+            }
+          }
         } catch (linkError) {
-          console.error("Error linking client:", linkError);
-        }
-
-        // Create user role
-        const { error: roleError } = await supabase.from("user_roles").insert({
-          user_id: authData.user.id,
-          role: "client" as const,
-        });
-
-        if (roleError) {
-          console.error("Error creating role:", roleError);
+          console.error("Error linking/creating client:", linkError);
         }
 
         toast.success("Conta criada com sucesso! Redirecionando...");
