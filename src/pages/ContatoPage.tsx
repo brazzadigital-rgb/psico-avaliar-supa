@@ -27,48 +27,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useWhatsApp } from "@/hooks/useWhatsApp";
 
-const contactInfo = [
-  {
-    icon: MapPin,
-    title: "Endereço",
-    content: "Rua João Salomoni, 650",
-    subtitle: "Vila Nova, Porto Alegre - RS",
-    copyable: "Rua João Salomoni, 650, Vila Nova, Porto Alegre - RS",
-    action: {
-      label: "Abrir no Maps",
-      href: "https://maps.google.com/?q=Rua+João+Salomoni,+650,+Vila+Nova,+Porto+Alegre+-+RS",
-      external: true,
-    },
-  },
-  {
-    icon: Phone,
-    title: "WhatsApp",
-    content: "(51) 99280-9471",
-    copyable: "5551992809471",
-    action: {
-      label: "Enviar mensagem",
-      href: "https://wa.me/5551992809471",
-      external: true,
-    },
-  },
-  {
-    icon: Mail,
-    title: "E-mail",
-    content: "centropsicoavaliar@gmail.com",
-    copyable: "centropsicoavaliar@gmail.com",
-    action: {
-      label: "Enviar e-mail",
-      href: "mailto:centropsicoavaliar@gmail.com",
-      external: false,
-    },
-  },
-  {
-    icon: Clock,
-    title: "Horário de Atendimento",
-    content: "Segunda a Sexta: 8h às 20h",
-    subtitle: "Sábado: 8h às 12h",
-  },
-];
+// contactInfo is now built inside the component to use dynamic data
 
 export default function ContatoPage() {
   const { toast } = useToast();
@@ -81,6 +40,49 @@ export default function ContatoPage() {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const contactInfo = [
+    {
+      icon: MapPin,
+      title: "Endereço",
+      content: "Rua João Salomoni, 650",
+      subtitle: "Vila Nova, Porto Alegre - RS",
+      copyable: "Rua João Salomoni, 650, Vila Nova, Porto Alegre - RS",
+      action: {
+        label: "Abrir no Maps",
+        href: "https://maps.google.com/?q=Rua+João+Salomoni,+650,+Vila+Nova,+Porto+Alegre+-+RS",
+        external: true,
+      },
+    },
+    {
+      icon: Phone,
+      title: "WhatsApp",
+      content: formattedPhone,
+      copyable: phoneDigits,
+      action: {
+        label: "Enviar mensagem",
+        href: getWhatsAppUrl(),
+        external: true,
+      },
+    },
+    {
+      icon: Mail,
+      title: "E-mail",
+      content: "centropsicoavaliar@gmail.com",
+      copyable: "centropsicoavaliar@gmail.com",
+      action: {
+        label: "Enviar e-mail",
+        href: "mailto:centropsicoavaliar@gmail.com",
+        external: false,
+      },
+    },
+    {
+      icon: Clock,
+      title: "Horário de Atendimento",
+      content: "Segunda a Sexta: 8h às 20h",
+      subtitle: "Sábado: 8h às 12h",
+    },
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
