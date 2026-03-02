@@ -1,9 +1,29 @@
 import { MessageCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export function WhatsAppButton() {
+  const { data: settings } = useQuery({
+    queryKey: ["site-settings-whatsapp-btn"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("key, value")
+        .in("key", ["general", "whatsapp"]);
+      if (error) return null;
+      const map: Record<string, any> = {};
+      data?.forEach((item: any) => { map[item.key] = item.value; });
+      return map;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const phone = (settings?.general?.phone || "(51) 99280-9471").replace(/\D/g, "");
+  const message = settings?.whatsapp?.default_message || "Olá! Gostaria de mais informações sobre os serviços do Centro Psicoavaliar.";
+
   return (
     <a
-      href="https://wa.me/5551992809471?text=Olá! Gostaria de mais informações sobre os serviços do Centro Psicoavaliar."
+      href={`https://wa.me/55${phone}?text=${encodeURIComponent(message)}`}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-50 group"
