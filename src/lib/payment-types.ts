@@ -26,19 +26,11 @@ export interface Order {
   code: string;
   client_id: string | null;
   appointment_id: string | null;
-  status: OrderStatus;
+  status: string;
   currency: string;
-  subtotal: number;
-  discount: number;
-  total: number;
-  payment_required: boolean;
-  payment_type: 'full' | 'deposit';
-  deposit_amount: number | null;
-  balance_due: number;
-  provider_selected: string | null;
-  notes: string | null;
-  expires_at: string | null;
-  paid_at: string | null;
+  total_amount: number;
+  checkout_token: string | null;
+  metadata: Record<string, unknown> | null;
   created_at: string;
   updated_at: string;
   // Joined
@@ -61,35 +53,27 @@ export interface Order {
 export interface OrderItem {
   id: string;
   order_id: string;
-  payable_type: 'appointment' | 'service_fee' | 'plan_subscription';
-  payable_id: string | null;
+  service_id: string | null;
+  plan_id: string | null;
   description: string;
-  unit_amount: number;
+  unit_price: number;
   quantity: number;
-  total_amount: number;
-  metadata_json: Record<string, unknown>;
+  total_price: number;
   created_at: string;
 }
 
 export interface Payment {
   id: string;
   order_id: string;
-  provider: PaymentProvider;
+  provider: string;
   provider_payment_id: string | null;
-  method: PaymentMethod | null;
-  status: PaymentStatus;
+  method: string | null;
+  status: string;
   amount: number;
   currency: string;
-  payment_url: string | null;
-  pix_qr_base64: string | null;
-  pix_copy_paste: string | null;
-  boleto_url: string | null;
-  boleto_barcode: string | null;
   installments: number;
-  expires_at: string | null;
   paid_at: string | null;
-  refunded_at: string | null;
-  raw_provider_response_json: Record<string, unknown> | null;
+  metadata: Record<string, unknown> | null;
   created_at: string;
   updated_at: string;
 }
@@ -107,15 +91,10 @@ export interface PaymentRefund {
 
 export interface PaymentProviderConfig {
   id: string;
-  provider: PaymentProvider;
-  is_active: boolean;
-  environment: 'sandbox' | 'production';
-  credentials_encrypted_json: Record<string, string> | null;
-  settings_json: {
-    name?: string;
-    supports?: PaymentMethod[];
-    [key: string]: unknown;
-  };
+  provider: string;
+  is_enabled: boolean;
+  is_sandbox: boolean;
+  config: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -144,12 +123,10 @@ export interface WebhookEvent {
   id: string;
   provider: string;
   event_type: string;
-  provider_event_id: string | null;
-  signature_valid: boolean | null;
-  payload_json: Record<string, unknown>;
+  payload: Record<string, unknown>;
   processed_at: string | null;
-  status: 'received' | 'processing' | 'processed' | 'failed' | 'ignored';
-  error: string | null;
+  status: string;
+  error_message: string | null;
   created_at: string;
 }
 

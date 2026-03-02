@@ -42,16 +42,15 @@ export default function CheckInPage() {
       // Transform the RPC result to match the expected format
       const row = data[0];
       return {
-        id: row.id,
-        code: row.code,
+        id: row.appointment_id,
+        code: code,
         scheduled_date: row.scheduled_date,
         scheduled_time: row.scheduled_time,
-        end_time: row.end_time,
         modality: row.modality,
         status: row.status,
         checked_in_at: row.checked_in_at,
-        client: { full_name: row.client_full_name },
-        service: { name: row.service_name, duration_minutes: row.service_duration_minutes }
+        client: { full_name: row.client_name },
+        service: { name: row.service_name, duration_minutes: 50 }
       };
     },
     enabled: !!code,

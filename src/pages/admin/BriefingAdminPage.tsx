@@ -52,32 +52,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface BriefingLink {
   id: string;
   token: string;
-  expires_at: string | null;
-  created_at: string;
+  client_name: string;
+  client_email: string | null;
+  expires_at: string;
+  max_accesses: number;
+  current_accesses: number;
   is_active: boolean;
-  access_count: number;
-  last_accessed_at: string | null;
-  created_by_user_id: string | null;
+  created_by: string | null;
+  created_at: string;
 }
 
 interface BriefingApproval {
   id: string;
-  token: string;
-  approver_name: string;
-  approver_email: string;
-  status: "approved" | "changes_requested";
-  notes: string | null;
-  created_at: string;
+  briefing_link_id: string;
+  client_name: string;
+  client_email: string | null;
+  approved_at: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  signature_data: string | null;
 }
 
 interface ChecklistResponse {
   id: string;
-  decision: "approved" | "adjust" | "na";
-  comment: string | null;
-  item: {
-    title: string;
-    key: string;
-  };
+  is_checked: boolean;
+  checklist_item_id: string;
 }
 
 interface AccessLog {
@@ -151,9 +150,9 @@ export default function BriefingAdminPage() {
       const { error } = await supabase
         .from("briefing_links")
         .insert({
-          token,
-          expires_at: expiresAt,
-          created_by_user_id: user?.id,
+          client_name: "Cliente",
+          expires_at: expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          created_by: user?.id,
           is_active: true
         });
 
@@ -259,7 +258,7 @@ export default function BriefingAdminPage() {
       const { data } = await supabase
         .from("briefing_link_access_logs")
         .select("*")
-        .eq("link_id", link.id)
+        .eq("briefing_link_id", link.id)
         .order("accessed_at", { ascending: false })
         .limit(50);
 

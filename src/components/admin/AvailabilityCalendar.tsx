@@ -33,8 +33,8 @@ interface Professional {
 interface DateOverride {
   id: string;
   professional_id: string;
-  date: string;
-  is_available: boolean;
+  override_date: string;
+  is_blocked: boolean;
   start_time: string | null;
   end_time: string | null;
   reason: string | null;
@@ -87,12 +87,12 @@ export default function AvailabilityCalendar() {
         const dateStr = format(date, "yyyy-MM-dd");
         
         // Check if exists
-        const existing = dateOverrides?.find((d) => d.date === dateStr);
+        const existing = dateOverrides?.find((d) => d.override_date === dateStr);
 
         const payload = {
           professional_id: selectedProfessional,
-          date: dateStr,
-          is_available: formData.is_available,
+          override_date: dateStr,
+          is_blocked: !formData.is_available,
           start_time: formData.is_available ? formData.start_time : null,
           end_time: formData.is_available ? formData.end_time : null,
           reason: formData.is_available ? null : formData.reason || null,
@@ -160,8 +160,8 @@ export default function AvailabilityCalendar() {
     setSelectedDates([]);
   };
 
-  const availableDates = dateOverrides?.filter((d) => d.is_available).map((d) => new Date(d.date)) || [];
-  const blockedDates = dateOverrides?.filter((d) => !d.is_available).map((d) => new Date(d.date)) || [];
+  const availableDates = dateOverrides?.filter((d) => !d.is_blocked).map((d) => new Date(d.override_date)) || [];
+  const blockedDates = dateOverrides?.filter((d) => d.is_blocked).map((d) => new Date(d.override_date)) || [];
 
   return (
     <Card>
@@ -257,7 +257,7 @@ export default function AvailabilityCalendar() {
                   {dateOverrides.map((override) => (
                     <Badge
                       key={override.id}
-                      variant={override.is_available ? "default" : "destructive"}
+                      variant={!override.is_blocked ? "default" : "destructive"}
                       className="gap-1 cursor-pointer hover:opacity-80"
                       onClick={() => {
                         if (confirm("Remover esta configuração?")) {
@@ -265,13 +265,13 @@ export default function AvailabilityCalendar() {
                         }
                       }}
                     >
-                      {override.is_available ? (
+                      {!override.is_blocked ? (
                         <Check className="w-3 h-3" />
                       ) : (
                         <X className="w-3 h-3" />
                       )}
-                      {format(new Date(override.date), "dd/MM/yyyy", { locale: ptBR })}
-                      {override.is_available && override.start_time && (
+                      {format(new Date(override.override_date), "dd/MM/yyyy", { locale: ptBR })}
+                      {!override.is_blocked && override.start_time && (
                         <span className="ml-1 opacity-80">
                           ({override.start_time.slice(0, 5)}-{override.end_time?.slice(0, 5)})
                         </span>

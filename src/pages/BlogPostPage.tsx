@@ -30,8 +30,8 @@ interface BlogPost {
   content: string | null;
   cover_image_url: string | null;
   published_at: string | null;
-  seo_title: string | null;
-  seo_description: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
   category: { name: string; slug: string } | null;
 }
 

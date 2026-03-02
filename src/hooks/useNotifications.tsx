@@ -5,19 +5,13 @@ import { useAuth } from "./useAuth";
 
 export interface Notification {
   id: string;
-  recipient_user_id: string;
-  category: "consultas" | "pagamentos" | "sistema" | "conteudo";
-  event_key: string;
+  recipient_id: string;
+  category: string;
   title: string;
-  body: string | null;
-  action_url: string | null;
-  resource_type: string | null;
-  resource_id: string | null;
-  metadata_json: Record<string, any>;
-  status: "queued" | "sent" | "failed";
-  priority: "low" | "normal" | "high";
+  body: string;
+  link: string | null;
+  is_read: boolean;
   read_at: string | null;
-  delivered_at: string | null;
   created_at: string;
 }
 
@@ -37,14 +31,14 @@ export function useNotifications() {
       const { data, error } = await supabase
         .from("notifications")
         .select("*")
-        .eq("recipient_user_id", user.id)
+        .eq("recipient_id", user.id)
         .order("created_at", { ascending: false })
         .limit(50);
       if (error) throw error;
       return data as Notification[];
     },
     enabled: !!user,
-    refetchInterval: 30000, // Refetch every 30 seconds
+    refetchInterval: 30000,
   });
 
   // Fetch unread count
@@ -59,7 +53,7 @@ export function useNotifications() {
       return data || 0;
     },
     enabled: !!user,
-    refetchInterval: 15000, // Refetch every 15 seconds
+    refetchInterval: 15000,
   });
 
   // Mark as read mutation
@@ -68,7 +62,7 @@ export function useNotifications() {
       if (!user) throw new Error("User not authenticated");
       const { data, error } = await supabase.rpc("mark_notifications_read", {
         _user_id: user.id,
-        _notification_ids: notificationIds || null,
+        _ids: notificationIds || null,
       });
       if (error) throw error;
       return data;
@@ -91,10 +85,9 @@ export function useNotifications() {
           event: "INSERT",
           schema: "public",
           table: "notifications",
-          filter: `recipient_user_id=eq.${user.id}`,
+          filter: `recipient_id=eq.${user.id}`,
         },
-        (payload) => {
-          // Refetch on new notification
+        () => {
           queryClient.invalidateQueries({ queryKey: ["notifications"] });
           queryClient.invalidateQueries({ queryKey: ["notifications-unread-count"] });
         }
@@ -129,28 +122,18 @@ export function useNotifications() {
 
 // Helper to create notifications (for use in other hooks/components)
 export async function createNotification(params: {
-  recipientUserId: string;
-  category: "consultas" | "pagamentos" | "sistema" | "conteudo";
-  eventKey: string;
+  recipientId: string;
   title: string;
-  body?: string;
-  actionUrl?: string;
-  resourceType?: string;
-  resourceId?: string;
-  priority?: "low" | "normal" | "high";
-  metadata?: Record<string, any>;
+  body: string;
+  category?: string;
+  link?: string;
 }) {
   const { data, error } = await supabase.rpc("create_notification", {
-    _recipient_user_id: params.recipientUserId,
-    _category: params.category,
-    _event_key: params.eventKey,
+    _recipient_id: params.recipientId,
     _title: params.title,
-    _body: params.body || null,
-    _action_url: params.actionUrl || null,
-    _resource_type: params.resourceType || null,
-    _resource_id: params.resourceId || null,
-    _priority: params.priority || "normal",
-    _metadata: params.metadata || {},
+    _body: params.body,
+    _category: params.category || "general",
+    _link: params.link || null,
   });
 
   if (error) throw error;
@@ -159,23 +142,16 @@ export async function createNotification(params: {
 
 // Notification event keys
 export const NOTIFICATION_EVENTS = {
-  // Appointments
   APPOINTMENT_CREATED: "appointment.created",
   APPOINTMENT_CONFIRMED: "appointment.confirmed",
   APPOINTMENT_RESCHEDULED: "appointment.rescheduled",
   APPOINTMENT_CANCELED: "appointment.canceled",
   APPOINTMENT_REMINDER_24H: "appointment.reminder_24h",
   APPOINTMENT_REMINDER_2H: "appointment.reminder_2h",
-  APPOINTMENT_REMINDER_15M: "appointment.reminder_15m",
-  APPOINTMENT_MEET_LINK_ADDED: "appointment.meet_link_added",
-  
-  // Payments
   PAYMENT_CREATED: "payment.created",
   PAYMENT_PAID: "payment.paid",
   PAYMENT_FAILED: "payment.failed",
   PAYMENT_REFUNDED: "payment.refunded",
-  
-  // System
   EMAIL_FAILED: "email.failed",
   USER_INVITED: "user.invited",
   USER_ROLE_CHANGED: "user.role_changed",

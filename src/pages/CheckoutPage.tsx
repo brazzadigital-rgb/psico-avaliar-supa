@@ -141,7 +141,7 @@ export default function CheckoutPage() {
         console.error("[Checkout] Erro ao buscar pedido:", error);
         throw error;
       }
-      return data as Order & {
+      return data as unknown as Order & {
         appointment?: {
           scheduled_date: string;
           scheduled_time: string;
