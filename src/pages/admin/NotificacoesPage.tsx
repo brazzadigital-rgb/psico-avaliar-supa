@@ -116,8 +116,8 @@ export default function NotificacoesPage() {
     if (!notification.read_at) {
       markAsRead([notification.id]);
     }
-    if (notification.action_url) {
-      navigate(notification.action_url);
+    if (notification.link) {
+      navigate(notification.link);
     }
   };
 
@@ -277,7 +277,7 @@ export default function NotificacoesPage() {
                   className={cn(
                     "p-4 hover:bg-muted/50 transition-colors",
                     !notification.read_at && "bg-primary/5",
-                    notification.priority === "high" && "border-l-4 border-l-destructive"
+                    false
                   )}
                 >
                   <div className="flex items-start gap-4">
@@ -339,7 +339,7 @@ export default function NotificacoesPage() {
                             </span>
                           </div>
                         </div>
-                        {notification.action_url && (
+                        {notification.link && (
                           <Button variant="ghost" size="icon" className="shrink-0">
                             <ExternalLink className="w-4 h-4" />
                           </Button>

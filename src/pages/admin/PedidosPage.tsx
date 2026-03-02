@@ -54,13 +54,13 @@ export default function PedidosPage() {
 
   // Update order mutation
   const updateOrderMutation = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Order> }) => {
+    mutationFn: async ({ id, updates }: { id: string; updates: Record<string, any> }) => {
       const { error } = await supabase
         .from("orders")
         .update({
           ...updates,
           updated_at: new Date().toISOString(),
-        })
+        } as any)
         .eq("id", id);
       if (error) throw error;
     },
@@ -191,9 +191,9 @@ export default function PedidosPage() {
                       {order.items?.length || 0} {order.items?.length === 1 ? "item" : "itens"}
                     </TableCell>
                     <TableCell className="text-right font-medium">
-                      {formatCurrency(order.total)}
+                      {formatCurrency(order.total_amount)}
                     </TableCell>
-                    <TableCell>{getStatusBadge(order.status)}</TableCell>
+                    <TableCell>{getStatusBadge(order.status as any)}</TableCell>
                     <TableCell>
                       {format(new Date(order.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
                     </TableCell>
@@ -258,7 +258,7 @@ export default function PedidosPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-muted-foreground">Status</Label>
-                    <div className="mt-1">{getStatusBadge(selectedOrder.status)}</div>
+                    <div className="mt-1">{getStatusBadge(selectedOrder.status as any)}</div>
                   </div>
                   <div>
                     <Label className="text-muted-foreground">Data</Label>
@@ -289,36 +289,20 @@ export default function PedidosPage() {
                         <div>
                           <p className="font-medium">{item.description}</p>
                           <p className="text-sm text-muted-foreground">
-                            {item.quantity}x {formatCurrency(item.unit_amount)}
+                            {item.quantity}x {formatCurrency(item.unit_price)}
                           </p>
                         </div>
-                        <p className="font-medium">{formatCurrency(item.total_amount)}</p>
+                        <p className="font-medium">{formatCurrency(item.total_price)}</p>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 <div className="border-t pt-4 space-y-2">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>{formatCurrency(selectedOrder.subtotal)}</span>
-                  </div>
-                  {selectedOrder.discount > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Desconto</span>
-                      <span>-{formatCurrency(selectedOrder.discount)}</span>
-                    </div>
-                  )}
                   <div className="flex justify-between font-bold text-lg border-t pt-2">
                     <span>Total</span>
-                    <span>{formatCurrency(selectedOrder.total)}</span>
+                    <span>{formatCurrency(selectedOrder.total_amount)}</span>
                   </div>
-                  {selectedOrder.payment_type === "deposit" && selectedOrder.deposit_amount && (
-                    <div className="text-sm text-muted-foreground">
-                      <p>Entrada: {formatCurrency(selectedOrder.deposit_amount)}</p>
-                      <p>Saldo restante: {formatCurrency(selectedOrder.balance_due)}</p>
-                    </div>
-                  )}
                 </div>
               </TabsContent>
 
@@ -334,10 +318,10 @@ export default function PedidosPage() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Badge variant={payment.status === "paid" ? "default" : "secondary"}>
-                              {getPaymentStatusLabel(payment.status)}
+                              {getPaymentStatusLabel(payment.status as any)}
                             </Badge>
                             <span className="text-sm text-muted-foreground">
-                              {getPaymentMethodLabel(payment.method)}
+                              {getPaymentMethodLabel(payment.method as any)}
                             </span>
                           </div>
                           <span className="font-medium">{formatCurrency(payment.amount)}</span>
@@ -477,25 +461,20 @@ function NewOrderDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (
         .insert([{
           code: tempCode,
           client_id: selectedClient.id,
-          status: "pending" as const,
-          subtotal: orderAmount,
-          total: orderAmount,
-          payment_required: true,
-          payment_type: "full" as const,
+          total_amount: orderAmount,
+          status: "pending",
         }])
         .select()
         .single();
 
       if (orderError) throw orderError;
 
-      // Create order item
       const { error: itemError } = await supabase.from("order_items").insert([{
         order_id: order.id,
-        payable_type: "service_fee" as const,
         description,
-        unit_amount: orderAmount,
+        unit_price: orderAmount,
         quantity: 1,
-        total_amount: orderAmount,
+        total_price: orderAmount,
       }]);
 
       if (itemError) throw itemError;

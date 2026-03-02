@@ -222,15 +222,15 @@ export default function ClienteConsultas() {
 
       const row = data[0];
       setSearchResult({
-        id: row.id,
-        code: row.code,
+        id: row.appointment_id,
+        code: searchCode.trim().toUpperCase(),
         scheduled_date: row.scheduled_date,
         scheduled_time: row.scheduled_time,
         modality: row.modality,
         status: row.status,
         checked_in_at: row.checked_in_at,
-        client: { full_name: row.client_full_name },
-        service: { name: row.service_name, duration_minutes: row.service_duration_minutes },
+        client: { full_name: row.client_name },
+        service: { name: row.service_name },
       });
     } catch (err) {
       console.error("Search error:", err);

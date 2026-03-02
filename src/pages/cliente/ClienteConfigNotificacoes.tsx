@@ -152,22 +152,13 @@ export default function ClienteConfigNotificacoes() {
                       <span className="text-xl">{getDeviceIcon(sub.user_agent)}</span>
                       <div>
                         <div className="font-medium text-sm">
-                          {sub.device_label || "Navegador"}
+                          {sub.user_agent?.slice(0, 30) || "Navegador"}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           Adicionado em{" "}
                           {format(new Date(sub.created_at), "dd 'de' MMM 'de' yyyy", {
                             locale: ptBR,
                           })}
-                          {sub.last_used_at && (
-                            <>
-                              {" • "}
-                              Último uso:{" "}
-                              {format(new Date(sub.last_used_at), "dd/MM/yyyy HH:mm", {
-                                locale: ptBR,
-                              })}
-                            </>
-                          )}
                         </div>
                       </div>
                     </div>

@@ -123,8 +123,8 @@ export default function BlogPage() {
         gallery_images: data.gallery_images.length > 0 ? data.gallery_images : null,
         category_id: data.category_id || null,
         status: data.status,
-        seo_title: data.seo_title || null,
-        seo_description: data.seo_description || null,
+        meta_title: data.seo_title || null,
+        meta_description: data.seo_description || null,
         published_at: data.status === "published" ? new Date().toISOString() : null,
       };
 
@@ -198,8 +198,8 @@ export default function BlogPage() {
       gallery_images: post.gallery_images || [],
       category_id: post.category_id || "",
       status: post.status,
-      seo_title: post.seo_title || "",
-      seo_description: post.seo_description || "",
+      seo_title: post.meta_title || "",
+      seo_description: post.meta_description || "",
     });
     setIsDialogOpen(true);
   };

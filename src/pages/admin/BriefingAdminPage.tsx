@@ -394,7 +394,7 @@ export default function BriefingAdminPage() {
                           <TableCell>
                             <span className="flex items-center gap-1">
                               <Eye className="h-4 w-4 text-muted-foreground" />
-                              {link.access_count}
+                              {link.current_accesses}
                             </span>
                           </TableCell>
                           <TableCell className="text-right">
@@ -480,21 +480,21 @@ export default function BriefingAdminPage() {
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
                               <Users className="h-4 w-4 text-muted-foreground" />
-                              <span className="font-medium">{approval.approver_name}</span>
-                              <Badge variant={approval.status === "approved" ? "default" : "secondary"}>
-                                {approval.status === "approved" ? "Aprovado" : "Ajustes solicitados"}
+                              <span className="font-medium">{approval.client_name}</span>
+                              <Badge variant="default">
+                                Aprovado
                               </Badge>
                             </div>
-                            <p className="text-sm text-muted-foreground">{approval.approver_email}</p>
+                            <p className="text-sm text-muted-foreground">{approval.client_email}</p>
                           </div>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Calendar className="h-4 w-4" />
-                            {formatDate(approval.created_at)}
+                            {formatDate(approval.approved_at)}
                           </div>
                         </div>
-                        {approval.notes && (
+                        {approval.signature_data && (
                           <div className="mt-4 p-3 bg-muted rounded-md">
-                            <p className="text-sm">{approval.notes}</p>
+                            <p className="text-sm">{approval.signature_data}</p>
                           </div>
                         )}
                       </CardContent>
@@ -513,7 +513,7 @@ export default function BriefingAdminPage() {
           <DialogHeader>
             <DialogTitle>Detalhes da Aprovação</DialogTitle>
             <DialogDescription>
-              Respostas do checklist enviadas por {selectedApproval?.approver_name}
+              Respostas do checklist enviadas por {selectedApproval?.client_name}
             </DialogDescription>
           </DialogHeader>
 
@@ -527,28 +527,23 @@ export default function BriefingAdminPage() {
                 <div key={response.id} className="p-4 border rounded-lg">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h4 className="font-medium">{response.item?.title || "Item"}</h4>
-                      {response.comment && (
-                        <p className="text-sm text-muted-foreground mt-1">{response.comment}</p>
-                      )}
+                      <h4 className="font-medium">{response.checklist_item_id || "Item"}</h4>
                     </div>
                     <Badge variant={
-                      response.decision === "approved" ? "default" :
-                      response.decision === "adjust" ? "destructive" : "secondary"
+                      response.is_checked ? "default" : "secondary"
                     }>
-                      {response.decision === "approved" ? "Aprovado" :
-                       response.decision === "adjust" ? "Ajustar" : "N/A"}
+                      {response.is_checked ? "Aprovado" : "Não aprovado"}
                     </Badge>
                   </div>
                 </div>
               ))}
 
-              {selectedApproval?.notes && (
+              {selectedApproval?.signature_data && (
                 <>
                   <Separator />
                   <div>
                     <h4 className="font-medium mb-2">Observações finais</h4>
-                    <p className="text-sm text-muted-foreground">{selectedApproval.notes}</p>
+                    <p className="text-sm text-muted-foreground">{selectedApproval.signature_data}</p>
                   </div>
                 </>
               )}

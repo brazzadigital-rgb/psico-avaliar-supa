@@ -171,8 +171,8 @@ export default function DisponibilidadePage() {
     mutationFn: async (data: typeof timeOffFormData) => {
       const { error } = await supabase.from("time_off_blocks").insert([{
         professional_id: data.professional_id,
-        start_date: data.start_date,
-        end_date: data.end_date,
+        start_datetime: data.start_date,
+        end_datetime: data.end_date,
         reason: data.reason || null,
       }]);
       if (error) throw error;
@@ -368,9 +368,9 @@ export default function DisponibilidadePage() {
                           {block.professional?.name || "-"}
                         </TableCell>
                         <TableCell>
-                          {format(new Date(block.start_date), "dd/MM/yyyy", { locale: ptBR })}
+                          {format(new Date(block.start_datetime), "dd/MM/yyyy", { locale: ptBR })}
                           {" - "}
-                          {format(new Date(block.end_date), "dd/MM/yyyy", { locale: ptBR })}
+                          {format(new Date(block.end_datetime), "dd/MM/yyyy", { locale: ptBR })}
                         </TableCell>
                         <TableCell>{block.reason || "-"}</TableCell>
                         <TableCell className="text-right">

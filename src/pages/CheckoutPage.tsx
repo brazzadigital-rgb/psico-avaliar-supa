@@ -309,7 +309,7 @@ export default function CheckoutPage() {
           provider: "manual",
           method: selectedMethod,
           status: "pending",
-          amount: order.total,
+          amount: order.total_amount,
           currency: order.currency,
           pix_qr_base64: pixQrCode,
           pix_copy_paste: pixCopyPaste,
@@ -1210,7 +1210,7 @@ export default function CheckoutPage() {
                   {order.items?.map((item: OrderItem) => (
                     <div key={item.id} className="flex justify-between text-sm">
                       <span className="text-muted-foreground">{item.description}</span>
-                      <span className="font-medium">{formatCurrency(item.total_amount)}</span>
+                      <span className="font-medium">{formatCurrency(item.total_price)}</span>
                     </div>
                   ))}
                 </div>
@@ -1218,13 +1218,13 @@ export default function CheckoutPage() {
                 {/* Total */}
                 <div className="flex justify-between items-center mb-6">
                   <span className="font-bold text-lg">Total</span>
-                  <span className="font-bold text-2xl text-primary">{formatCurrency(order.total)}</span>
+                  <span className="font-bold text-2xl text-primary">{formatCurrency(order.total_amount)}</span>
                 </div>
 
-                {order.payment_type === "deposit" && order.deposit_amount && (
+                {(order.metadata as any)?.payment_type === "deposit" && (order.metadata as any)?.deposit_amount && (
                   <div className="text-sm text-muted-foreground mb-6 p-4 rounded-xl bg-secondary/50">
-                    <p>Entrada: <span className="font-medium">{formatCurrency(order.deposit_amount)}</span></p>
-                    <p>Saldo restante: <span className="font-medium">{formatCurrency(order.balance_due)}</span></p>
+                    <p>Entrada: <span className="font-medium">{formatCurrency((order.metadata as any).deposit_amount)}</span></p>
+                    <p>Saldo restante: <span className="font-medium">{formatCurrency(order.total_amount - (order.metadata as any).deposit_amount)}</span></p>
                   </div>
                 )}
 
