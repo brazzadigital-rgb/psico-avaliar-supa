@@ -160,8 +160,10 @@ export default function AvailabilityCalendar() {
     setSelectedDates([]);
   };
 
-  const availableDates = dateOverrides?.filter((d) => !d.is_blocked).map((d) => new Date(d.override_date)) || [];
-  const blockedDates = dateOverrides?.filter((d) => d.is_blocked).map((d) => new Date(d.override_date)) || [];
+  // Use T00:00:00 to force local timezone parsing (avoid UTC shift)
+  const parseLocalDate = (dateStr: string) => new Date(dateStr + "T00:00:00");
+  const availableDates = dateOverrides?.filter((d) => !d.is_blocked).map((d) => parseLocalDate(d.override_date)) || [];
+  const blockedDates = dateOverrides?.filter((d) => d.is_blocked).map((d) => parseLocalDate(d.override_date)) || [];
 
   return (
     <Card>
@@ -262,7 +264,7 @@ export default function AvailabilityCalendar() {
                       ) : (
                         <X className="w-3 h-3" />
                       )}
-                      {format(new Date(override.override_date), "dd/MM/yyyy", { locale: ptBR })}
+                      {format(parseLocalDate(override.override_date), "dd/MM/yyyy", { locale: ptBR })}
                       {!override.is_blocked && override.start_time && (
                         <span className="ml-1 opacity-80">
                           ({override.start_time.slice(0, 5)}-{override.end_time?.slice(0, 5)})
