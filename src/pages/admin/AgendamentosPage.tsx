@@ -32,6 +32,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { useCheckInNotifications } from "@/hooks/useCheckInNotifications";
+import { useProfessionalId } from "@/hooks/useProfessionalId";
 
 type AppointmentStatus = "pending" | "confirmed" | "rescheduled" | "canceled" | "completed";
 
@@ -40,6 +41,7 @@ export default function AgendamentosPage() {
   useCheckInNotifications();
 
   const queryClient = useQueryClient();
+  const { professionalId, isProfessional } = useProfessionalId();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
@@ -52,7 +54,7 @@ export default function AgendamentosPage() {
   });
 
   const { data: appointments = [], isLoading, error } = useQuery({
-    queryKey: ["appointments", statusFilter],
+    queryKey: ["appointments", statusFilter, professionalId],
     queryFn: async () => {
       let query = supabase
         .from("appointments")
@@ -67,6 +69,10 @@ export default function AgendamentosPage() {
 
       if (statusFilter !== "all") {
         query = query.eq("status", statusFilter as AppointmentStatus);
+      }
+
+      if (isProfessional && professionalId) {
+        query = query.eq("professional_id", professionalId);
       }
 
       const { data, error } = await query;
