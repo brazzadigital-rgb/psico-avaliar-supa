@@ -27,6 +27,7 @@ import {
   UserCheck,
   Bell,
   BarChart3,
+  Package,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -56,6 +57,7 @@ const navCategories = [
       { name: "Profissionais", href: "/admin/profissionais", icon: Users, permissions: ['professionals.read'] },
       { name: "Disponibilidade", href: "/admin/disponibilidade", icon: Clock, permissions: ['availability.read'] },
       { name: "Planos", href: "/admin/planos", icon: CreditCard, permissions: ['plans.read'] },
+      { name: "Pacotes", href: "/admin/pacotes", icon: Package, permissions: ['services.read'] },
     ]
   },
   {

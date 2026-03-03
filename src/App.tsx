@@ -41,6 +41,7 @@ import ClientesPage from "./pages/admin/ClientesPage";
 import ProfissionaisPage from "./pages/admin/ProfissionaisPage";
 import BlogPage from "./pages/admin/BlogPage";
 import PlanosPage from "./pages/admin/PlanosPage";
+import PacotesPage from "./pages/admin/PacotesPage";
 import DisponibilidadePage from "./pages/admin/DisponibilidadePage";
 import ConfiguracoesPage from "./pages/admin/ConfiguracoesPage";
 import EmailTemplatesPage from "./pages/admin/EmailTemplatesPage";
@@ -133,6 +134,7 @@ const App = () => (
                 <Route path="profissionais" element={<ProfissionaisPage />} />
                 <Route path="blog" element={<BlogPage />} />
                 <Route path="planos" element={<PlanosPage />} />
+                <Route path="pacotes" element={<PacotesPage />} />
                 <Route path="disponibilidade" element={<DisponibilidadePage />} />
                 <Route path="configuracoes" element={<ConfiguracoesPage />} />
                 <Route path="email-templates" element={<EmailTemplatesPage />} />

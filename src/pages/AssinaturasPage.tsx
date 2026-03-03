@@ -7,6 +7,9 @@ import { PremiumCard, IconBox, FeatureList } from "@/components/ui/premium-card"
 import { PremiumAccordion, PremiumAccordionItem, PremiumAccordionTrigger, PremiumAccordionContent } from "@/components/ui/premium-accordion";
 import { ScrollAnimate } from "@/hooks/useScrollAnimation";
 import { useWhatsApp } from "@/hooks/useWhatsApp";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
 import heroImage from "@/assets/hero-assinaturas.jpg";
 import {
   CheckCircle2,
@@ -22,6 +25,7 @@ import {
   CreditCard,
   Percent,
   HelpCircle,
+  Package,
 } from "lucide-react";
 
 const plans = [
@@ -130,6 +134,41 @@ const included = [
 
 export default function AssinaturasPage() {
   const { getWhatsAppUrl } = useWhatsApp();
+
+  const { data: servicePackages = [] } = useQuery({
+    queryKey: ["public-service-packages"],
+    queryFn: async () => {
+      const { data: pkgs, error } = await supabase
+        .from("service_packages")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order");
+      if (error) throw error;
+
+      const { data: allItems } = await supabase
+        .from("service_package_items")
+        .select("*, services(name)");
+
+      return (pkgs || []).map((pkg: any) => ({
+        ...pkg,
+        items: (allItems || [])
+          .filter((item: any) => item.package_id === pkg.id)
+          .map((item: any) => ({
+            quantity: item.quantity,
+            service_name: item.services?.name,
+          })),
+      }));
+    },
+  });
+
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+
+  const discount = (original: number, promo: number) => {
+    if (original <= 0) return 0;
+    return Math.round(((original - promo) / original) * 100);
+  };
+
   return (
     <Layout>
       {/* Hero */}
@@ -222,6 +261,94 @@ export default function AssinaturasPage() {
           </div>
         </div>
       </Section>
+
+      {/* Service Packages */}
+      {servicePackages.length > 0 && (
+        <Section variant="muted">
+          <div className="container-wide">
+            <ScrollAnimate animation="fade-up">
+              <SectionHeader
+                badge="Pacotes Promocionais"
+                title="Pacotes de Serviços"
+                description="Combine serviços com preços especiais e economize no seu tratamento"
+              />
+            </ScrollAnimate>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {servicePackages.map((pkg: any, index: number) => (
+                <ScrollAnimate key={pkg.id} animation="fade-up" delay={index * 0.15}>
+                  <div className={`relative h-full ${pkg.is_highlighted ? "md:-mt-4 md:mb-4 z-10" : ""}`}>
+                    {pkg.is_highlighted && (
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                        <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-accent to-primary text-white text-sm font-medium rounded-full shadow-lg">
+                          <Star className="w-4 h-4" />
+                          Melhor Oferta
+                        </span>
+                      </div>
+                    )}
+                    <PremiumCard
+                      variant={pkg.is_highlighted ? "highlight" : "default"}
+                      padding="lg"
+                      className="h-full flex flex-col"
+                    >
+                      <div className="mb-4">
+                        <IconBox icon={Package} size="lg" className="mb-4 bg-gradient-to-br from-primary/5 to-accent/5" />
+                        <h3 className="text-2xl font-display font-semibold mb-2">{pkg.name}</h3>
+                        {pkg.description && (
+                          <p className="text-muted-foreground text-sm">{pkg.description}</p>
+                        )}
+                      </div>
+
+                      <div className="mb-4 pb-4 border-b border-border space-y-2">
+                        {pkg.items.map((item: any, i: number) => (
+                          <div key={i} className="flex items-center gap-2 text-sm">
+                            <Badge variant="outline" className="text-xs font-semibold">{item.quantity}x</Badge>
+                            <span>{item.service_name}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mb-6 flex-1">
+                        {pkg.original_price > pkg.promotional_price && (
+                          <p className="text-sm text-muted-foreground line-through">
+                            {formatCurrency(pkg.original_price)}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <span className="text-3xl font-bold text-primary">
+                            {formatCurrency(pkg.promotional_price)}
+                          </span>
+                          {pkg.original_price > pkg.promotional_price && (
+                            <Badge className="bg-accent/20 text-accent border-accent/30">
+                              -{discount(pkg.original_price, pkg.promotional_price)}%
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      <Button
+                        asChild
+                        className={`w-full rounded-full ${pkg.is_highlighted ? "btn-premium text-white" : ""}`}
+                        variant={pkg.is_highlighted ? "default" : "outline"}
+                        size="lg"
+                      >
+                        <a
+                          href={getWhatsAppUrl(`Olá! Tenho interesse no pacote ${pkg.name}.`)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Quero este pacote
+                          <ArrowUpRight className="w-4 h-4 ml-2" />
+                        </a>
+                      </Button>
+                    </PremiumCard>
+                  </div>
+                </ScrollAnimate>
+              ))}
+            </div>
+          </div>
+        </Section>
+      )}
 
       {/* What's Included */}
       <Section variant="muted">
